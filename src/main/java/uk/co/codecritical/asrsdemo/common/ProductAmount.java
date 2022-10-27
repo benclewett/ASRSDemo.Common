@@ -35,4 +35,11 @@ public class ProductAmount {
                 '}';
     }
 
+    public static String niceProduct(ProductAmount pa) {
+        if (pa == null)
+            return "null";
+        else
+            return String.format("%s[%d]", pa.getProduct().getName(), pa.getAmount());
+    }
+
 }

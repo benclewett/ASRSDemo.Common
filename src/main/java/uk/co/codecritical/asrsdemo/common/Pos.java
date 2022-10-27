@@ -91,4 +91,9 @@ public class Pos {
     public String toString() {
         return "Pos(" +x + "," + y + ")";
     }
+
+    public String niceCoordinate() {
+        return String.format("(%d,%d)", x, y);
+    }
+
 }
