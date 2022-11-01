@@ -2,23 +2,25 @@ package uk.co.codecritical.asrsdemo.common;
 
 public class Tote {
 
+    private final int id;
     private final Product product;
     private int amount;
-    private final int barcode;
 
-    public Tote(Product product, int amount, int barcode) {
+    public Tote(Product product, int amount) {
+        this.id = getNextId();
         this.product = product;
         this.amount = amount;
-        this.barcode = barcode;
     }
 
-    public Tote(int productId, String productName, int amount, int barcode) {
+    public Tote(int productId, String productName, int amount) {
+        this.id = getNextId();
         this.product = new Product(productId, productName);
         this.amount = amount;
-        this.barcode = barcode;
     }
 
+
     //region Get / Set
+
     public Product getProduct() {
         return product;
     }
@@ -31,8 +33,8 @@ public class Tote {
         this.amount = amount;
     }
 
-    public int getBarcode() {
-        return barcode;
+    public int getId() {
+        return id;
     }
 
     //endregion
@@ -60,5 +62,13 @@ public class Tote {
 
     //endregion
 
+    //region Static Code
+
+    private static int nextId = 1;
+    private synchronized static int getNextId() {
+        return nextId++;
+    }
+
+    //endregion
 
 }
