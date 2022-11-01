@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 
 public class OrderTest {
 
-    static Tote pa1 = new Tote(1, "Eggs", 2);
-    static Tote pa2 = new Tote(2, "Milk", 3);
-    static Tote pa3 = new Tote(3, "Bread", 5);
+    static Tote pa1 = new Tote(1, "EGGS", 2, 1);
+    static Tote pa2 = new Tote(2, "MILK", 3, 2);
+    static Tote pa3 = new Tote(3, "BEER", 5, 3);
 
     @Test
     public void testAdd_Length() {
