@@ -5,13 +5,13 @@ import java.util.List;
 
 public class Order {
 
-    private final List<ProductAmount> items = new ArrayList<>();
+    private final List<Tote> items = new ArrayList<>();
 
     public Order() {
 
     }
 
-    public void add(ProductAmount pa) {
+    public void add(Tote pa) {
         items.add(pa);
     }
 
@@ -21,7 +21,7 @@ public class Order {
 
     public int amount() {
         int l = 0;
-        for(ProductAmount pa : items)
+        for(Tote pa : items)
             l += pa.getAmount();
         return l;
     }
@@ -33,7 +33,7 @@ public class Order {
                 '}';
     }
 
-    public List<ProductAmount> getItems() {
+    public List<Tote> getItems() {
         return items;
     }
 

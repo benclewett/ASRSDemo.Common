@@ -1,16 +1,16 @@
 package uk.co.codecritical.asrsdemo.common;
 
-public class ProductAmount {
+public class Tote {
 
     private final Product product;
     private int amount;
 
-    public ProductAmount(Product product, int amount) {
+    public Tote(Product product, int amount) {
         this.product = product;
         this.amount = amount;
     }
 
-    public ProductAmount(int productId, String productName, int amount) {
+    public Tote(int productId, String productName, int amount) {
         this.product = new Product(productId, productName);
         this.amount = amount;
     }
@@ -29,13 +29,13 @@ public class ProductAmount {
 
     @Override
     public String toString() {
-        return "ProductAmount{" +
+        return "Tote{" +
                 "product=" + product +
                 ", amount=" + amount +
                 '}';
     }
 
-    public static String niceProduct(ProductAmount pa) {
+    public static String niceProduct(Tote pa) {
         if (pa == null)
             return "";
         else
