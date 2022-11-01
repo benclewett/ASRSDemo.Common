@@ -1,5 +1,7 @@
 package uk.co.codecritical.asrsdemo.common;
 
+import java.util.Objects;
+
 public class Tote {
 
     private final int id;
@@ -50,7 +52,10 @@ public class Tote {
     }
 
     public String niceProduct() {
-        return String.format("%s,%d", getProduct().getName(), getAmount());
+        return String.format("%03d,%s,%d",
+                id,
+                getProduct().getName(),
+                amount);
     }
 
     public static String niceProduct(Tote pa) {
@@ -59,6 +64,24 @@ public class Tote {
         else
             return pa.niceProduct();
     }
+
+    //endregion
+
+    //region Comparison
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tote tote = (Tote) o;
+        return id == tote.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 
     //endregion
 
