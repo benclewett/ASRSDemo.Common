@@ -39,6 +39,18 @@ public class Tote {
         return id;
     }
 
+    public int getProductId() {
+        return product.getId();
+    }
+
+    //endregion
+
+    //region BI
+
+    public void incAmount(int inc) {
+        amount += inc;
+    }
+
     //endregion
 
     //region toString
@@ -46,7 +58,9 @@ public class Tote {
     @Override
     public String toString() {
         return "Tote{" +
-                "product=" + product +
+                "id=" + id +
+                ", productId=" + product.getId() +
+                ", productName=" + product.getName() +
                 ", amount=" + amount +
                 '}';
     }
