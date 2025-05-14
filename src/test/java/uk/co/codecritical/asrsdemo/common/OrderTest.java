@@ -5,9 +5,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class OrderTest {
-    final static Tote PA_1 = Tote.builder().setProduct(1, "EGGS").setAmount(2).build();
-    final static Tote PA_2 = Tote.builder().setProduct(2, "MILK").setAmount(3).build();
-    final static Tote PA_3 = Tote.builder().setProduct(3, "BEER").setAmount(5).build();
+    final static Tote PA_1 = Tote.builder().setSku(1, "EGGS").setAmount(2).build();
+    final static Tote PA_2 = Tote.builder().setSku(2, "MILK").setAmount(3).build();
+    final static Tote PA_3 = Tote.builder().setSku(3, "BEER").setAmount(5).build();
 
     @Test
     public void testAdd_Length() {

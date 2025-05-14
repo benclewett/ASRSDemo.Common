@@ -13,7 +13,7 @@ public class ToteTest {
 
         Sku p = new Sku(id, EGGS);
 
-        Tote pa = Tote.builder().setProduct(p).setAmount(AMOUNT).build();
+        Tote pa = Tote.builder().setSku(p).setAmount(AMOUNT).build();
 
         assertEquals(AMOUNT, pa.amount);
     }

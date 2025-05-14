@@ -75,9 +75,15 @@ public class Tote {
         return new Builder(id);
     }
 
+    public Builder mutate() {
+        return new Builder(this.id)
+                .setAmount(amount)
+                .setSku(sku);
+    }
+
     public static class Builder {
         private int id;
-        private Sku product = null;
+        private Sku sku = null;
         private int amount;
 
         private Builder() {
@@ -89,13 +95,13 @@ public class Tote {
             nextId = Math.max(this.id, nextId) + 1;
         }
 
-        public Builder setProduct(Sku product) {
-            this.product = product;
+        public Builder setSku(Sku sku) {
+            this.sku = sku;
             return this;
         }
 
-        public Builder setProduct(int productId, String productName) {
-            this.product = new Sku(productId, productName);
+        public Builder setSku(int productId, String productName) {
+            this.sku = new Sku(productId, productName);
             return this;
         }
 
@@ -105,7 +111,7 @@ public class Tote {
         }
 
         public Tote build() {
-            return new Tote(id, product, amount);
+            return new Tote(id, sku, amount);
         }
     }
 
