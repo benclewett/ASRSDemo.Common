@@ -1,74 +1,35 @@
 package uk.co.codecritical.asrsdemo.common;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.Objects;
 
 public class Tote {
+    public final int id;
+    public final Sku sku;
+    public final int amount;
 
-    private final int id;
-    private final Product product;
-    private int amount;
-
-    public Tote(Product product, int amount) {
-        this.id = getNextId();
-        this.product = product;
+    private Tote(int id, Sku product, int amount) {
+        this.id = id;
+        this.sku = product;
         this.amount = amount;
     }
-
-    public Tote(int productId, String productName, int amount) {
-        this.id = getNextId();
-        this.product = new Product(productId, productName);
-        this.amount = amount;
-    }
-
-
-    //region Get / Set
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getProductId() {
-        return product.getId();
-    }
-
-    //endregion
-
-    //region BI
-
-    public void incAmount(int inc) {
-        amount += inc;
-    }
-
-    //endregion
 
     //region toString
 
     @Override
     public String toString() {
-        return "Tote{" +
-                "id=" + id +
-                ", productId=" + product.getId() +
-                ", productName=" + product.getName() +
-                ", amount=" + amount +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("sku", sku)
+                .add("amount", amount)
+                .toString();
     }
 
     public String niceProduct() {
         return String.format("%03d,%s,%d",
                 id,
-                getProduct().getName(),
+                sku.name,
                 amount);
     }
 
@@ -99,11 +60,53 @@ public class Tote {
 
     //endregion
 
-    //region Static Code
+    //region Builder
 
     private static int nextId = 1;
     private synchronized static int getNextId() {
         return nextId++;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(int id) {
+        return new Builder(id);
+    }
+
+    public static class Builder {
+        private int id;
+        private Sku product = null;
+        private int amount;
+
+        private Builder() {
+            this.id = getNextId();
+        }
+
+        private Builder(int id) {
+            this.id = id;
+            nextId = Math.max(this.id, nextId) + 1;
+        }
+
+        public Builder setProduct(Sku product) {
+            this.product = product;
+            return this;
+        }
+
+        public Builder setProduct(int productId, String productName) {
+            this.product = new Sku(productId, productName);
+            return this;
+        }
+
+        public Builder setAmount(int amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Tote build() {
+            return new Tote(id, product, amount);
+        }
     }
 
     //endregion

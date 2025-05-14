@@ -1,11 +1,12 @@
 package uk.co.codecritical.asrsdemo.common;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.Objects;
 
 public class Pos {
-
-    private int x;
-    private int y;
+    public final int x;
+    public final int y;
 
     public Pos(int x, int y) {
         this.x = x;
@@ -17,22 +18,17 @@ public class Pos {
         this.y = pos.y;
     }
 
-    public int incX(int inc) {
-        x += inc;
-        return x;
+    public Pos incX(int inc) {
+        return new Pos(x + inc, y);
     }
 
-    public int incY(int inc) {
-        y += inc;
-        return y;
+    public Pos incY(int inc) {
+        return new Pos(x, y + inc);
     }
 
     public Pos inc(Pos inc) {
-        x += inc.x;
-        y += inc.y;
-        return this;
+        return new Pos(x + inc.x, y + inc.y);
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -47,36 +43,12 @@ public class Pos {
         return Objects.hash(x, y);
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setPos(Pos pos) {
-        this.x = pos.x;
-        this.y = pos.y;
-    }
-
     public Pos add(Pos pos) {
-        this.x += pos.x;
-        this.y += pos.y;
-        return this;
+        return new Pos(x + pos.x, y + pos.y);
     }
+
     public Pos subtract(Pos pos) {
-        this.x -= pos.x;
-        this.y -= pos.y;
-        return this;
+        return new Pos(x - pos.x, y - pos.y);
     }
 
     public static Pos add(Pos p0, Pos p1) {
@@ -89,7 +61,10 @@ public class Pos {
 
     @Override
     public String toString() {
-        return "Pos(" +x + "," + y + ")";
+        return MoreObjects.toStringHelper(this)
+                .add("x", x)
+                .add("y", y)
+                .toString();
     }
 
     public String niceCoordinate() {

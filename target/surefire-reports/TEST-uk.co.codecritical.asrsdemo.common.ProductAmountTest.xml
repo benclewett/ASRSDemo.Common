@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="uk.co.codecritical.asrsdemo.common.ProductAmountTest" time="0.022" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="uk.co.codecritical.asrsdemo.common.ProductAmountTest" time="0.015" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="18"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="GB"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-18.0.2.1.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/ben/src/ASRSDemo.Common/target/surefire/surefirebooter1381920283483105612.jar /Users/ben/src/ASRSDemo.Common/target/surefire 2022-10-24T10-39-28_811-jvmRun1 surefire16636347467480479879tmp surefire_04037612963458488468tmp"/>
+    <property name="sun.java.command" value="/Users/ben/src/ASRSDemo.Common/target/surefire/surefirebooter9072672270359474843.jar /Users/ben/src/ASRSDemo.Common/target/surefire 2022-10-30T17-58-16_378-jvmRun1 surefire2442402459627528399tmp surefire_014297375015540572012tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/ben/src/ASRSDemo.Common/target/test-classes:/Users/ben/src/ASRSDemo.Common/target/classes:/Users/ben/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/Users/ben/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/Users/ben/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.9.1/junit-jupiter-api-5.9.1.jar:/Users/ben/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/ben/.m2/repository/org/junit/platform/junit-platform-commons/1.9.1/junit-platform-commons-1.9.1.jar:/Users/ben/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:"/>
@@ -26,10 +26,10 @@
     <property name="basedir" value="/Users/ben/src/ASRSDemo.Common"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="line.separator" value="&#10;"/>
-    <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/ben/src/ASRSDemo.Common/target/surefire/surefirebooter1381920283483105612.jar"/>
+    <property name="surefire.real.class.path" value="/Users/ben/src/ASRSDemo.Common/target/surefire/surefirebooter9072672270359474843.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="18.0.2.1+1-1"/>
@@ -42,6 +42,7 @@
     <property name="localRepository" value="/Users/ben/.m2/repository"/>
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
     <property name="java.io.tmpdir" value="/var/folders/16/q7n2qdks1ylcj_0y0_87rbb40000gn/T/"/>
+    <property name="idea.version" value="2022.2.2"/>
     <property name="java.version" value="18.0.2.1"/>
     <property name="user.dir" value="/Users/ben/src/ASRSDemo.Common"/>
     <property name="os.arch" value="x86_64"/>
@@ -55,5 +56,5 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="62.0"/>
   </properties>
-  <testcase name="test_Constructior" classname="uk.co.codecritical.asrsdemo.common.ProductAmountTest" time="0.002"/>
+  <testcase name="test_Constructior" classname="uk.co.codecritical.asrsdemo.common.ProductAmountTest" time="0.001"/>
 </testsuite>

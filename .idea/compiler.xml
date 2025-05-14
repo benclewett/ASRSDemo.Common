@@ -9,8 +9,5 @@
         <module name="ASRSDemo.Common" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="ASRSDemo.Common" target="10" />
-    </bytecodeTargetLevel>
   </component>
 </project>

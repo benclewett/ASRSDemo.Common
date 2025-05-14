@@ -1,38 +1,31 @@
 package uk.co.codecritical.asrsdemo.common;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.Objects;
 
-public class Product {
+public class Sku {
+    public final int id;
+    public final String name;
 
-    private final int id;
-    private final String name;
-
-    public Product(int id, String name) {
+    public Sku(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
     @Override
     public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getId() {
-        return id;
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("name", name)
+                .toString();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
+        Sku product = (Sku) o;
         return id == product.id;
     }
 

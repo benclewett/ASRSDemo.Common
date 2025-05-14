@@ -10,30 +10,15 @@ public class PosTest  {
 
     @Test
     public void test_constructor() {
-
         var pos = new Pos(X, Y);
 
-        assertEquals(pos.getX(), X);
-        assertEquals(pos.getY(), Y);
+        assertEquals(X, pos.x);
+        assertEquals(Y, pos.y);
 
         var pos2 = new Pos(pos);
 
-        assertEquals(pos2.getX(), X);
-        assertEquals(pos2.getY(), Y);
-
-    }
-
-    @Test
-    public void test_set() {
-
-        var pos = new Pos(0, 0);
-
-        pos.setX(X);
-        pos.setY(Y);
-
-        assertEquals(pos.getX(), X);
-        assertEquals(pos.getY(), Y);
-
+        assertEquals(X, pos2.x);
+        assertEquals(Y, pos2.y);
     }
 
     @Test
@@ -41,26 +26,24 @@ public class PosTest  {
 
         var pos = new Pos(7,11);
 
-        pos.incX(1);
+        pos = pos.incX(1);
         assertEquals(new Pos(8, 11), pos);
 
-        pos.incY(3);
+        pos = pos.incY(3);
         assertEquals(new Pos(8, 14), pos);
 
-        pos.incX(-5);
+        pos = pos.incX(-5);
         assertEquals(new Pos(3, 14), pos);
 
-        pos.incY(-15);
+        pos = pos.incY(-15);
         assertEquals(new Pos(3, -1), pos);
 
-        pos.inc(new Pos(17, -17));
+        pos = pos.inc(new Pos(17, -17));
         assertEquals(new Pos(20, -18), pos);
-
     }
 
     @Test
     public void test_Equals() {
-
         var pos1 = new Pos(19, 17);
         var pos2 = new Pos(19, 17);
 
@@ -70,12 +53,10 @@ public class PosTest  {
 
         assertNotSame(pos1, pos2);
         assertEquals(pos1, pos2);
-
     }
 
     @Test
     public void test_NotEquals() {
-
         var pos1 = new Pos(19, 17);
         var pos2 = new Pos(19, 18);
 
@@ -85,55 +66,46 @@ public class PosTest  {
 
         assertNotSame(pos1, pos2);
         assertNotEquals(pos1, pos2);
-
     }
 
     @Test
     public void test_add() {
-
         Pos p0 = new Pos(2, 5);
         Pos p1 = new Pos(7, 11);
 
-        p0.add(p1);
+        Pos p2 = p0.add(p1);
 
-        assertEquals(new Pos(9, 16), p0);
-
+        assertEquals(new Pos(9, 16), p2);
     }
 
     @Test
     public void test_subtract() {
-
         Pos p0 = new Pos(2, 5);
         Pos p1 = new Pos(7, 11);
 
-        p0.subtract(p1);
+        Pos p2 = p0.subtract(p1);
 
-        assertEquals(new Pos(-5, -6), p0);
-
+        assertEquals(new Pos(-5, -6), p2);
     }
 
     @Test
     public void test_add_static() {
-
         Pos p0 = new Pos(2, 5);
         Pos p1 = new Pos(7, 11);
 
         Pos p2 = Pos.add(p0, p1);
 
         assertEquals(new Pos(9, 16), p2);
-
     }
 
     @Test
     public void test_subtract_static() {
-
         Pos p0 = new Pos(2, 5);
         Pos p1 = new Pos(7, 11);
 
         Pos p2 = Pos.subtract(p0, p1);
 
         assertEquals(new Pos(-5, -6), p2);
-
     }
 
 }

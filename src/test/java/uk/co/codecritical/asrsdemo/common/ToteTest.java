@@ -4,33 +4,17 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ToteTest {
+    private static final String EGGS = "Eggs";
+    private static final int AMOUNT = 10;
 
     @Test
     public void test_Constructor1() {
-
         int id = 1;
-        String name = "Eggs";
-        int amount = 10;
 
-        Product p = new Product(id, name);
+        Sku p = new Sku(id, EGGS);
 
-        Tote pa = new Tote(p, amount);
+        Tote pa = Tote.builder().setProduct(p).setAmount(AMOUNT).build();
 
-        assertEquals(pa.getAmount(), amount);
-
+        assertEquals(AMOUNT, pa.amount);
     }
-
-    @Test
-    public void test_Constructor2() {
-
-        int id = 1;
-        String name = "Eggs";
-        int amount = 10;
-
-        Tote pa = new Tote(id, name, amount);
-
-        assertEquals(pa.getAmount(), amount);
-
-    }
-
 }
