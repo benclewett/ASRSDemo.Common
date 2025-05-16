@@ -25,8 +25,8 @@ public class Sku {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Sku product = (Sku) o;
-        return id == product.id;
+        Sku sku = (Sku) o;
+        return id == sku.id;
     }
 
     @Override

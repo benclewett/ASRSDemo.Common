@@ -8,13 +8,15 @@ public class ToteTest {
     private static final int AMOUNT = 10;
 
     @Test
-    public void test_Constructor1() {
+    public void test_Constructor() {
         int id = 1;
 
-        Sku p = new Sku(id, EGGS);
+        Sku sku = new Sku(id, EGGS);
 
-        Tote pa = Tote.builder().setSku(p).setAmount(AMOUNT).build();
+        Tote tote = Tote.builder(id).setSku(sku).setAmount(AMOUNT).build();
 
-        assertEquals(AMOUNT, pa.amount);
+        assertEquals(id, tote.id);
+        assertEquals(sku, tote.sku);
+        assertEquals(AMOUNT, tote.amount);
     }
 }

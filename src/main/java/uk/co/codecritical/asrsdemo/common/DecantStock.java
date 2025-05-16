@@ -4,61 +4,16 @@ import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
 
-public class Tote {
+public class DecantStock {
     public final int id;
     public final Sku sku;
     public final int amount;
 
-    private Tote(int id, Sku product, int amount) {
+    private DecantStock(int id, Sku sku, int amount) {
         this.id = id;
-        this.sku = product;
+        this.sku = sku;
         this.amount = amount;
     }
-
-    //region toString
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("sku", sku)
-                .add("amount", amount)
-                .toString();
-    }
-
-    public String niceProduct() {
-        return String.format("%03d,%s,%d",
-                id,
-                sku.name,
-                amount);
-    }
-
-    public static String niceProduct(Tote pa) {
-        if (pa == null)
-            return "";
-        else
-            return pa.niceProduct();
-    }
-
-    //endregion
-
-    //region Comparison
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tote tote = (Tote) o;
-        return amount == tote.amount && this.sku.equals(tote.sku);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(amount, sku);
-    }
-
-
-    //endregion
 
     //region Builder
 
@@ -81,10 +36,31 @@ public class Tote {
                 .setSku(sku);
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("sku", sku)
+                .add("amount", amount)
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        DecantStock that = (DecantStock) o;
+        return amount == that.amount && Objects.equals(sku, that.sku);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sku, amount);
+    }
+
     public static class Builder {
-        private int id;
+        private final int id;
         private Sku sku = null;
-        private int amount;
+        private int amount = 0;
 
         private Builder() {
             this.id = getNextId();
@@ -110,11 +86,12 @@ public class Tote {
             return this;
         }
 
-        public Tote build() {
-            return new Tote(id, sku, amount);
+        public DecantStock build() {
+            assert (sku != null);
+            assert (amount != 0);
+            return new DecantStock(id, sku, amount);
         }
     }
 
     //endregion
-
 }
