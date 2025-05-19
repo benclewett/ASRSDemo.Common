@@ -1,7 +1,8 @@
-package uk.co.codecritical.asrsdemo.common;
+package uk.co.codecritical.asrs.common;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ToteTest {
     private static final String EGGS = "Eggs";
@@ -16,7 +17,7 @@ public class ToteTest {
         Tote tote = Tote.builder(id).setSku(sku).setAmount(AMOUNT).build();
 
         assertEquals(id, tote.id);
-        assertEquals(sku, tote.sku);
+        assertEquals(sku, tote.sku.get());
         assertEquals(AMOUNT, tote.amount);
     }
 }

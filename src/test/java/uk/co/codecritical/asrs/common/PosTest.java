@@ -1,7 +1,10 @@
-package uk.co.codecritical.asrsdemo.common;
+package uk.co.codecritical.asrs.common;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 public class PosTest  {
 

@@ -1,4 +1,4 @@
-package uk.co.codecritical.asrsdemo.common;
+package uk.co.codecritical.asrs.common;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

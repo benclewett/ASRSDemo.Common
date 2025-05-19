@@ -1,4 +1,4 @@
-package uk.co.codecritical.asrsdemo.common;
+package uk.co.codecritical.asrs.common;
 
 import com.google.common.base.MoreObjects;
 
@@ -13,6 +13,15 @@ public class DecantStock {
         this.id = id;
         this.sku = sku;
         this.amount = amount;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("sku", sku)
+                .add("amount", amount)
+                .toString();
     }
 
     //region Builder
@@ -34,15 +43,6 @@ public class DecantStock {
         return new Builder(this.id)
                 .setAmount(amount)
                 .setSku(sku);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("sku", sku)
-                .add("amount", amount)
-                .toString();
     }
 
     @Override

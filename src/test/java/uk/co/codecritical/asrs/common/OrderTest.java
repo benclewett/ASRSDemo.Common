@@ -1,8 +1,8 @@
-package uk.co.codecritical.asrsdemo.common;
+package uk.co.codecritical.asrs.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderTest {
     final static Tote PA_1 = Tote.builder().setSku(1, "EGGS").setAmount(2).build();
@@ -12,20 +12,20 @@ public class OrderTest {
     @Test
     public void testAdd_Length() {
         Route o = Route.builder()
-                .addTote(PA_1)
-                .addTote(PA_2)
-                .addTote(PA_3)
+                .setTote(PA_1)
+                .setTote(PA_2)
+                .setTote(PA_3)
                 .build();
 
-        assertEquals(3, o.length());
+        assertEquals(3, o.size());
     }
 
     @Test
     public void testAdd_Amount() {
         Route o = Route.builder()
-                .addTote(PA_1)
-                .addTote(PA_2)
-                .addTote(PA_3)
+                .setTote(PA_1)
+                .setTote(PA_2)
+                .setTote(PA_3)
                 .build();
 
         assertEquals(10, o.amount());

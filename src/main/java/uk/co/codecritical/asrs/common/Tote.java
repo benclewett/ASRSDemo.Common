@@ -1,21 +1,20 @@
-package uk.co.codecritical.asrsdemo.common;
+package uk.co.codecritical.asrs.common;
 
 import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class Tote {
     public final int id;
-    public final Sku sku;
+    public final Optional<Sku> sku;
     public final int amount;
 
-    private Tote(int id, Sku product, int amount) {
+    private Tote(int id, Optional<Sku> product, int amount) {
         this.id = id;
         this.sku = product;
         this.amount = amount;
     }
-
-    //region toString
 
     @Override
     public String toString() {
@@ -29,7 +28,7 @@ public class Tote {
     public String niceProduct() {
         return String.format("%03d,%s,%d",
                 id,
-                sku.name,
+                sku.map(s -> s.name).orElse(""),
                 amount);
     }
 
@@ -39,10 +38,6 @@ public class Tote {
         else
             return pa.niceProduct();
     }
-
-    //endregion
-
-    //region Comparison
 
     @Override
     public boolean equals(Object o) {
@@ -56,9 +51,6 @@ public class Tote {
     public int hashCode() {
         return Objects.hash(amount, sku);
     }
-
-
-    //endregion
 
     //region Builder
 
@@ -82,9 +74,9 @@ public class Tote {
     }
 
     public static class Builder {
-        private int id;
-        private Sku sku = null;
-        private int amount;
+        private final int id;
+        private Optional<Sku> sku = Optional.empty();
+        private int amount = 0;
 
         private Builder() {
             this.id = getNextId();
@@ -96,12 +88,22 @@ public class Tote {
         }
 
         public Builder setSku(Sku sku) {
+            this.sku = Optional.of(sku);
+            return this;
+        }
+
+        public Builder setSku(Optional<Sku> sku) {
             this.sku = sku;
             return this;
         }
 
         public Builder setSku(int productId, String productName) {
-            this.sku = new Sku(productId, productName);
+            this.sku = Optional.of(new Sku(productId, productName));
+            return this;
+        }
+
+        public Builder removeSku() {
+            this.sku = Optional.empty();
             return this;
         }
 
@@ -111,10 +113,10 @@ public class Tote {
         }
 
         public Tote build() {
+            assert (sku.isEmpty() && amount == 0 || sku.isPresent() && amount != 0);
             return new Tote(id, sku, amount);
         }
     }
 
     //endregion
-
 }

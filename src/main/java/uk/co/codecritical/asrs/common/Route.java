@@ -1,17 +1,16 @@
-package uk.co.codecritical.asrsdemo.common;
+package uk.co.codecritical.asrs.common;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 
 public class Route {
-
     public final ImmutableSet<Tote> totes;
 
     public Route(ImmutableSet<Tote> totes) {
         this.totes = totes;
     }
 
-    public int length() {
+    public int size() {
         return totes.size();
     }
 
@@ -36,7 +35,7 @@ public class Route {
         private Builder() {
         }
 
-        public Builder addTote(Tote tote) {
+        public Builder setTote(Tote tote) {
             totes.add(tote);
             return this;
         }

@@ -1,4 +1,4 @@
-package uk.co.codecritical.asrsdemo.common;
+package uk.co.codecritical.asrs.common;
 
 import com.google.common.base.MoreObjects;
 
