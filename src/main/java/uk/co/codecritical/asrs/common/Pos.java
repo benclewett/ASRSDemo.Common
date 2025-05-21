@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects;
 import java.util.Objects;
 
 public class Pos {
+    public static final Pos ZERO = new Pos(0,0);
     public final int x;
     public final int y;
 
@@ -62,13 +63,7 @@ public class Pos {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("x", x)
-                .add("y", y)
+                .add("pos", String.format("(%d,%d)", x, y))
                 .toString();
     }
-
-    public String niceCoordinate() {
-        return String.format("(%d,%d)", x, y);
-    }
-
 }
