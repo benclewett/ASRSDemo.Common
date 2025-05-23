@@ -62,8 +62,14 @@ public class Pos {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("pos", String.format("(%d,%d)", x, y))
-                .toString();
+        if (ZERO.equals(this)) {
+            return "Pos{ZERO}";
+        } else {
+            return "Pos{" + niceCoordinate() + "}";
+        }
+    }
+
+    public String niceCoordinate() {
+        return String.format("(%d,%d)", x, y);
     }
 }
