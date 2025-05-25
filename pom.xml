@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>uk.co.codecritical</groupId>
-  <artifactId>ASRSDemo.Common</artifactId>
+  <artifactId>ASRS.Common</artifactId>
   <version>1.0</version>
 
-  <name>ASRSDemo.Common</name>
+  <name>ASRS.Common</name>
   <url>http://www.example.com</url>
 
   <properties>

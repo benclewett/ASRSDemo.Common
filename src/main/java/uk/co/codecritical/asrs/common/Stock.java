@@ -4,13 +4,12 @@ import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
 
-public class DecantStock {
-    public final int id;
+/* A quantity of sku */
+public class Stock {
     public final Sku sku;
     public final int amount;
 
-    private DecantStock(int id, Sku sku, int amount) {
-        this.id = id;
+    private Stock(Sku sku, int amount) {
         this.sku = sku;
         this.amount = amount;
     }
@@ -18,10 +17,21 @@ public class DecantStock {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("id", id)
                 .add("sku", sku)
                 .add("amount", amount)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Stock that = (Stock) o;
+        return amount == that.amount && Objects.equals(sku, that.sku);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sku, amount);
     }
 
     //region Builder
@@ -35,49 +45,21 @@ public class DecantStock {
         return new Builder();
     }
 
-    public static Builder builder(int id) {
-        return new Builder(id);
-    }
-
     public Builder mutate() {
-        return new Builder(this.id)
+        return new Builder()
                 .setAmount(amount)
                 .setSku(sku);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        DecantStock that = (DecantStock) o;
-        return amount == that.amount && Objects.equals(sku, that.sku);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sku, amount);
-    }
-
     public static class Builder {
-        private final int id;
         private Sku sku = null;
         private int amount = 0;
 
         private Builder() {
-            this.id = getNextId();
-        }
-
-        private Builder(int id) {
-            this.id = id;
-            nextId = Math.max(this.id, nextId) + 1;
         }
 
         public Builder setSku(Sku sku) {
             this.sku = sku;
-            return this;
-        }
-
-        public Builder setSku(int productId, String productName) {
-            this.sku = new Sku(productId, productName);
             return this;
         }
 
@@ -86,10 +68,10 @@ public class DecantStock {
             return this;
         }
 
-        public DecantStock build() {
+        public Stock build() {
             assert (sku != null);
             assert (amount != 0);
-            return new DecantStock(id, sku, amount);
+            return new Stock(sku, amount);
         }
     }
 

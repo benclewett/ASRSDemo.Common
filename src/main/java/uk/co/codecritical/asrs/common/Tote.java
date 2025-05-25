@@ -2,6 +2,7 @@ package uk.co.codecritical.asrs.common;
 
 import com.google.common.base.MoreObjects;
 
+import javax.swing.text.html.Option;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -9,11 +10,13 @@ public class Tote {
     public final int id;
     public final Optional<Sku> sku;
     public final int amount;
+    public final Optional<Pos> gridPos;
 
-    private Tote(int id, Optional<Sku> product, int amount) {
+    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos) {
         this.id = id;
-        this.sku = product;
+        this.sku = sku;
         this.amount = amount;
+        this.gridPos = gridPos;
     }
 
     @Override
@@ -22,6 +25,7 @@ public class Tote {
                 .add("id", id)
                 .add("sku", sku)
                 .add("amount", amount)
+                .add("gridPos", gridPos)
                 .toString();
     }
 
@@ -30,13 +34,6 @@ public class Tote {
                 id,
                 sku.map(s -> s.name).orElse(""),
                 amount);
-    }
-
-    public static String niceProduct(Tote pa) {
-        if (pa == null)
-            return "";
-        else
-            return pa.niceProduct();
     }
 
     @Override
@@ -70,6 +67,7 @@ public class Tote {
     public Builder mutate() {
         return new Builder(this.id)
                 .setAmount(amount)
+                .setGridPos(gridPos)
                 .setSku(sku);
     }
 
@@ -77,6 +75,7 @@ public class Tote {
         private final int id;
         private Optional<Sku> sku = Optional.empty();
         private int amount = 0;
+        private Optional<Pos> gridPos = Optional.empty();
 
         private Builder() {
             this.id = getNextId();
@@ -102,6 +101,11 @@ public class Tote {
             return this;
         }
 
+        public Builder setGridPos(Optional<Pos> gridPos) {
+            this.gridPos = gridPos;
+            return this;
+        }
+
         public Builder removeSku() {
             this.sku = Optional.empty();
             return this;
@@ -114,7 +118,7 @@ public class Tote {
 
         public Tote build() {
             assert (sku.isEmpty() && amount == 0 || sku.isPresent() && amount != 0);
-            return new Tote(id, sku, amount);
+            return new Tote(id, sku, amount, gridPos);
         }
     }
 
