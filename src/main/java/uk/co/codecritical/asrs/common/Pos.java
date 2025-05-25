@@ -65,7 +65,7 @@ public class Pos {
         if (ZERO.equals(this)) {
             return "Pos{ZERO}";
         } else {
-            return "Pos{" + niceCoordinate() + "}";
+            return "Pos{" + x + "," + y + "}";
         }
     }
 

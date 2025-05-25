@@ -117,6 +117,7 @@ public class Tote {
         }
 
         public Tote build() {
+            assert (sku != null);
             assert (sku.isEmpty() && amount == 0 || sku.isPresent() && amount != 0);
             return new Tote(id, sku, amount, gridPos);
         }
