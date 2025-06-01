@@ -6,11 +6,19 @@ import java.util.Queue;
 public class EventSender<N extends Notification> {
     private final Queue<Listener<N>> queue = new LinkedList<>();
 
+    public EventSender() {
+        Router.add(this);
+    }
+
     public void addListener(Listener<N> listener) {
         queue.add(listener);
     }
 
     public void sendNotification(N n) {
         queue.forEach(l -> l.handleNotification(n));
+    }
+
+    void clear() {
+        queue.clear();
     }
 }

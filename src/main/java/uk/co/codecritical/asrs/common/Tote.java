@@ -2,7 +2,6 @@ package uk.co.codecritical.asrs.common;
 
 import com.google.common.base.MoreObjects;
 
-import javax.swing.text.html.Option;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -11,12 +10,18 @@ public class Tote {
     public final Optional<Sku> sku;
     public final int amount;
     public final Optional<Pos> gridPos;
+    private TokenSet properties = TokenSet.EMPTY;
 
-    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos) {
+    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties) {
         this.id = id;
         this.sku = sku;
         this.amount = amount;
         this.gridPos = gridPos;
+        this.properties = properties;
+    }
+
+    public TokenSet getProperties() {
+        return properties;
     }
 
     @Override
@@ -26,14 +31,20 @@ public class Tote {
                 .add("sku", sku)
                 .add("amount", amount)
                 .add("gridPos", gridPos)
+                .add("properties", properties)
                 .toString();
     }
 
     public String niceProduct() {
-        return String.format("%03d,%s,%d",
-                id,
-                sku.map(s -> s.name).orElse(""),
-                amount);
+        if (sku.isPresent()) {
+            return String.format("%d,%s,%d",
+                    id,
+                    sku.get().name,
+                    amount);
+        } else {
+            return String.format("%d,(empty)",
+                    id);
+        }
     }
 
     @Override
@@ -56,6 +67,10 @@ public class Tote {
         return nextId++;
     }
 
+    public static Tote createEmptyTote() {
+        return new Builder().build();
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -68,7 +83,8 @@ public class Tote {
         return new Builder(this.id)
                 .setAmount(amount)
                 .setGridPos(gridPos)
-                .setSku(sku);
+                .setSku(sku)
+                .setProperties(properties);
     }
 
     public static class Builder {
@@ -76,50 +92,46 @@ public class Tote {
         private Optional<Sku> sku = Optional.empty();
         private int amount = 0;
         private Optional<Pos> gridPos = Optional.empty();
-
+        private TokenSet properties = TokenSet.EMPTY;
         private Builder() {
             this.id = getNextId();
         }
-
         private Builder(int id) {
             this.id = id;
             nextId = Math.max(this.id, nextId) + 1;
         }
-
         public Builder setSku(Sku sku) {
             this.sku = Optional.of(sku);
             return this;
         }
-
         public Builder setSku(Optional<Sku> sku) {
             this.sku = sku;
             return this;
         }
-
         public Builder setSku(int productId, String productName) {
             this.sku = Optional.of(new Sku(productId, productName));
             return this;
         }
-
         public Builder setGridPos(Optional<Pos> gridPos) {
             this.gridPos = gridPos;
             return this;
         }
-
         public Builder removeSku() {
             this.sku = Optional.empty();
             return this;
         }
-
         public Builder setAmount(int amount) {
             this.amount = amount;
             return this;
         }
-
+        public Builder setProperties(TokenSet properties) {
+            this.properties = properties;
+            return this;
+        }
         public Tote build() {
             assert (sku != null);
             assert (sku.isEmpty() && amount == 0 || sku.isPresent() && amount != 0);
-            return new Tote(id, sku, amount, gridPos);
+            return new Tote(id, sku, amount, gridPos, properties);
         }
     }
 
