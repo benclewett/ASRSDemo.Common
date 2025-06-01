@@ -3,7 +3,7 @@ package uk.co.codecritical.asrs.common.notifications;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class EventRouterTest {
+public class EventNotificationRouterTest {
 
     @Test
     void testSingleListener() {

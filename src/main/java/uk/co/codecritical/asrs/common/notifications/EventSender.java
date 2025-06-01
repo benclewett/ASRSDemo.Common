@@ -7,7 +7,7 @@ public class EventSender<N extends Notification> {
     private final Queue<Listener<N>> queue = new LinkedList<>();
 
     public EventSender() {
-        Router.add(this);
+        NotificationRouter.add(this);
     }
 
     public void addListener(Listener<N> listener) {
