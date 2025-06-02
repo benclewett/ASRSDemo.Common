@@ -9,6 +9,7 @@ public class TokenSet {
     public static final TokenSet EMPTY = new TokenSet(ImmutableSet.of());
 
     private final ImmutableSet<String> tokens;
+
     private TokenSet(ImmutableSet<String> tokens) {
         this.tokens = tokens;
     }
@@ -35,6 +36,11 @@ public class TokenSet {
     }
 
     //region Builder
+
+    public Builder mutate() {
+        return new Builder()
+                .addTokens(tokens);
+    }
 
     public static Builder builder() {
         return new Builder();

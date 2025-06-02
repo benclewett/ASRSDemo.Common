@@ -38,6 +38,25 @@ class TokenSetTest {
     }
 
     @Test
+    void testFullBuilder2() {
+        var builder = TokenSet.builder();
+        builder.addTokens(ImmutableSet.of("T3", "T4"));
+        builder.addToken("T1");
+        builder.addToken("T2");
+        builder.addTokens(ImmutableSet.of("T3", "T4"));
+        var tokens = builder.build();
+
+        assertEquals(4, tokens.size());
+        assertFalse(tokens.isEmpty());
+        assertTrue(tokens.isPresent("T1"));
+        assertTrue(tokens.isPresent("t1"));
+        assertTrue(tokens.isPresent("T2"));
+        assertTrue(tokens.isPresent("T3"));
+        assertTrue(tokens.isPresent("T4"));
+        assertFalse(tokens.isPresent("T5"));
+    }
+
+    @Test
     void testEmptyBuilder() {
         var tokens = TokenSet.builder().build();
 

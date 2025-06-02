@@ -1,5 +1,6 @@
 package uk.co.codecritical.asrs.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
@@ -7,10 +8,13 @@ import java.util.Optional;
 
 public class Tote {
     public final int id;
+    @JsonIgnore
     public final Optional<Sku> sku;
+    @JsonIgnore
     public final int amount;
+    @JsonIgnore
     public final Optional<Pos> gridPos;
-    private TokenSet properties = TokenSet.EMPTY;
+    public final TokenSet properties;
 
     private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties) {
         this.id = id;
@@ -18,10 +22,6 @@ public class Tote {
         this.amount = amount;
         this.gridPos = gridPos;
         this.properties = properties;
-    }
-
-    public TokenSet getProperties() {
-        return properties;
     }
 
     @Override
@@ -122,6 +122,14 @@ public class Tote {
         }
         public Builder setAmount(int amount) {
             this.amount = amount;
+            return this;
+        }
+        public Builder clearProperties() {
+            this.properties = TokenSet.EMPTY;
+            return this;
+        }
+        public Builder setProperty(String property) {
+            this.properties = this.properties.mutate().addToken(property).build();
             return this;
         }
         public Builder setProperties(TokenSet properties) {
