@@ -7,21 +7,17 @@ public class Tokeniser {
     private static final ImmutableSet<Character> WHITE_SPACE = ImmutableSet.of(' ', '\t', '\n', '\r');
     private static final Character DOUBLE_QUOTE = '\"';
     private static final Character SINGLE_QUOTE = '\'';
-    private static final ImmutableSet<Character> SINGLE_CHARACTER_CONJUNCTION = ImmutableSet.of('=', ',');
-
-    enum ParseState {
-        BETWEEN,
-        IN_TOKEN,
-        IN_DOUBLE_QUOTE,
-        IN_SINGLE_QUOTE
-    }
+    private static final ImmutableSet<Character> SINGLE_CHARACTER_CONJUNCTION = ImmutableSet.of('=', ',', '!');
+    private static final String EQUALS = "=";
 
     private Tokeniser() {
         // Static Class
     }
 
-    public static void checkLegality(ImmutableList<Token> tokens) {
-        Keyword primary = null;
+    //region Assert Legality
+
+    public static void assertLegality(ImmutableList<Token> tokens) {
+        KeyWord primary = null;
         Token prevToken = null;
         for (int i = 0; i < tokens.size(); i++) {
             var token = tokens.get(i);
@@ -35,24 +31,24 @@ public class Tokeniser {
                             QueryParserException.ExceptionType.UNKNOWN_KEYWORD,
                             "Query should start with a keyword, not: " + token.token);
                 }
-                primary = Keyword.mapFromString(token.token).get();
+                primary = KeyWord.mapFromString(token.token).get();
                 if (!primary.primaryKeyword) {
                     throw new QueryParserException(
                             QueryParserException.ExceptionType.UNEXPECTED_SYNTAX,
-                            "Query starts with a unexpected keyword: " + token.token);
+                            "Query starts with a unexpected keyword: '" + token.token + "'");
                 }
             } else {
                 if (!prevToken.getLegalFollowingTokens().contains(token.tokenType)) {
                     throw new QueryParserException(
                             QueryParserException.ExceptionType.UNEXPECTED_SYNTAX,
-                            "Token " + token.token + " should not follow " + prevToken.tokenType);
+                            "Token '" + token.token + "' should not follow '" + prevToken.tokenType + "'");
                 }
                 if (Token.TokenType.KEYWORD.equals(token.tokenType)) {
-                    var keyword = Keyword.mapFromString(token.token).orElseThrow();
+                    var keyword = KeyWord.mapFromString(token.token).orElseThrow();
                     if (!primary.secondaries.contains(keyword)) {
                         throw new QueryParserException(
                                 QueryParserException.ExceptionType.UNEXPECTED_SYNTAX,
-                                "Keyword " + keyword + " should not follow " + primary);
+                                "KeyWord '" + keyword + "' should not follow " + primary + "'");
                     }
                 }
             }
@@ -61,24 +57,29 @@ public class Tokeniser {
         }
     }
 
-    public static ImmutableList<Token> stringsToTokens(ImmutableList<String> words) {
+    //endregion
+
+    //region Strings to Tokens
+
+    public static ImmutableList<Token> stringsToTokens(ImmutableList<String> strings) {
         ImmutableList.Builder<Token> builder = ImmutableList.builder();
 
         Token prevToken = null;
-        for (int i = 0; i < words.size(); i++) {
-            String word = words.get(i);
-            var keyword = Keyword.mapFromString(word);
+        for (int i = 0; i < strings.size(); i++) {
+            String word = strings.get(i);
+            var keyword = KeyWord.mapFromString(word);
             var entityWord = EntityWord.mapFromString(word);
+            var logicalWord = LogicalWord.mapFromString(word);
             Token token;
 
-            if (prevToken != null && Token.TokenType.EQUALS.equals(prevToken.tokenType)) {
+            if (prevToken != null && EQUALS.equals(prevToken.token) ) {
                 token = new Token(word, Token.TokenType.VALUE);
             } else if (keyword.isPresent()) {
                 token = new Token(word, Token.TokenType.KEYWORD);
             } else if (entityWord.isPresent()) {
                 token = new Token(word, Token.TokenType.RESERVED_WORD);
-            } else if (word.equals("=")) {
-                token = new Token(word, Token.TokenType.EQUALS);
+            } else if (logicalWord.isPresent()) {
+                token = new Token(word, Token.TokenType.LOGICAL);
             } else if (word.equals(",")) {
                 token = new Token(word, Token.TokenType.COMMA);
             } else {
@@ -94,11 +95,22 @@ public class Tokeniser {
         return builder.build();
     }
 
-    public static ImmutableList<String> queryToStrings(String s) {
+    //endregion
+
+    //region Query to String
+
+    enum ParseState {
+        BETWEEN,
+        IN_TOKEN,
+        IN_DOUBLE_QUOTE,
+        IN_SINGLE_QUOTE
+    }
+
+    public static ImmutableList<String> queryToStrings(String query) {
         ImmutableList.Builder<String> builder = ImmutableList.builder();
         StringBuilder token = new StringBuilder();
         ParseState state = ParseState.BETWEEN;
-        for (char c : s.toCharArray()) {
+        for (char c : query.toCharArray()) {
             switch (state) {
                 case BETWEEN -> {
                     if (DOUBLE_QUOTE.equals(c)) {
@@ -133,9 +145,8 @@ public class Tokeniser {
                 case IN_DOUBLE_QUOTE -> {
                     if (DOUBLE_QUOTE.equals(c)) {
                         state = ParseState.BETWEEN;
-                        if (!token.isEmpty()) {
-                            builder.add(token.toString());
-                        }
+                        // Empty strings are legal here
+                        builder.add(token.toString());
                         token.setLength(0);
                     } else {
                         token.append(c);
@@ -144,9 +155,8 @@ public class Tokeniser {
                 case IN_SINGLE_QUOTE -> {
                     if (SINGLE_QUOTE.equals(c)) {
                         state = ParseState.BETWEEN;
-                        if (!token.isEmpty()) {
-                            builder.add(token.toString());
-                        }
+                        // Empty strings are legal here
+                        builder.add(token.toString());
                         token.setLength(0);
                     } else {
                         token.append(c);
@@ -162,4 +172,6 @@ public class Tokeniser {
 
         return builder.build();
     }
+
+    //endregion
 }

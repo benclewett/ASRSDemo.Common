@@ -22,7 +22,7 @@ public class Token {
     public enum TokenType {
         KEYWORD,
         RESERVED_WORD,
-        EQUALS,
+        LOGICAL,
         COMMA,
         END,
         VALUE
@@ -35,10 +35,10 @@ public class Token {
     public static ImmutableSet<TokenType> getLegalFollowingTokens(TokenType tokenType) {
         return switch (tokenType) {
             case KEYWORD -> ImmutableSet.of(TokenType.RESERVED_WORD, TokenType.KEYWORD, TokenType.END);
-            case RESERVED_WORD -> ImmutableSet.of(TokenType.EQUALS, TokenType.COMMA, TokenType.KEYWORD, TokenType.END);
-            case EQUALS -> ImmutableSet.of(TokenType.VALUE);
+            case RESERVED_WORD -> ImmutableSet.of(TokenType.LOGICAL, TokenType.COMMA, TokenType.KEYWORD, TokenType.END);
+            case LOGICAL -> ImmutableSet.of(TokenType.VALUE, TokenType.RESERVED_WORD);
             case COMMA -> ImmutableSet.of(TokenType.RESERVED_WORD);
-            case VALUE -> ImmutableSet.of(TokenType.COMMA, TokenType.KEYWORD, TokenType.END);
+            case VALUE -> ImmutableSet.of(TokenType.COMMA, TokenType.KEYWORD, TokenType.END, TokenType.LOGICAL);
             case END -> ImmutableSet.of();
         };
     }

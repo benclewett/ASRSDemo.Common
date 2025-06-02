@@ -190,18 +190,18 @@ class TokeniserTest {
 
         assertEquals(Token.TokenType.KEYWORD, tokens.get(0).tokenType);
         assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(1).tokenType);
-        assertEquals(Token.TokenType.EQUALS, tokens.get(2).tokenType);
+        assertEquals(Token.TokenType.LOGICAL, tokens.get(2).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(3).tokenType);
         assertEquals(Token.TokenType.KEYWORD, tokens.get(4).tokenType);
         assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(5).tokenType);
-        assertEquals(Token.TokenType.EQUALS, tokens.get(6).tokenType);
+        assertEquals(Token.TokenType.LOGICAL, tokens.get(6).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(7).tokenType);
         assertEquals(Token.TokenType.COMMA, tokens.get(8).tokenType);
         assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(9).tokenType);
-        assertEquals(Token.TokenType.EQUALS, tokens.get(10).tokenType);
+        assertEquals(Token.TokenType.LOGICAL, tokens.get(10).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(11).tokenType);
         assertEquals(Token.TokenType.END, tokens.get(12).tokenType);
 
-        Tokeniser.checkLegality(tokens);
+        Tokeniser.assertLegality(tokens);
     }
 }
