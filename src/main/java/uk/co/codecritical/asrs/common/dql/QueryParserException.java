@@ -6,7 +6,7 @@ public class QueryParserException extends RuntimeException {
 
     public enum ExceptionType {
         UNKNOWN_KEYWORD,
-        UNSUPPORTED, NO_QUERY
+        UNEXPECTED_SYNTAX,
     }
 
     private final ExceptionType exceptionType;

@@ -1,19 +1,18 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-class StringToTokenMapperTest {
+class TokeniserTest {
 
     @Test
-    void testSentance() {
+    void testSentence() {
         final String input = "The  quick\t\t\nbrown\rfox  \t jumped over   the\t lazy dog.   ";
         final String target = "The quick brown fox jumped over the lazy dog.";
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
         var outJoined = String.join(" ", out);
 
         assertEquals(target, outJoined);
@@ -26,7 +25,7 @@ class StringToTokenMapperTest {
                 "a b c", "d", "e", "f"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -41,7 +40,7 @@ class StringToTokenMapperTest {
                 "a", "b c d", "e", "f"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -56,7 +55,7 @@ class StringToTokenMapperTest {
                 "a", "b", "c d e"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -71,7 +70,7 @@ class StringToTokenMapperTest {
                 "a 'b' c", "d", "e", "f"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -86,7 +85,7 @@ class StringToTokenMapperTest {
                 "a b c", "d", "e", "f"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -101,7 +100,7 @@ class StringToTokenMapperTest {
                 "a", "b c d", "e", "f"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -116,7 +115,7 @@ class StringToTokenMapperTest {
                 "a", "b", "c d e"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -131,7 +130,7 @@ class StringToTokenMapperTest {
                 "a", "b \"c\" d", "e", "f"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -146,7 +145,7 @@ class StringToTokenMapperTest {
                 "a", "=", "b", ",", "c", "=", "d"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -161,7 +160,7 @@ class StringToTokenMapperTest {
                 "a", "=", "b", ",", "c", "=", "d"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
@@ -176,11 +175,33 @@ class StringToTokenMapperTest {
                 "a", "=", "b=4", ",", "c", "=", "d,e,f"
         );
 
-        var out = StringToTokenMapper.map(input);
+        var out = Tokeniser.queryToStrings(input);
 
         assertEquals(target.size(), out.size());
         for (int i = 0; i < target.size(); i++) {
             assertEquals(target.get(i), out.get(i));
         }
+    }
+    @Test
+    void test() {
+        var words = Tokeniser.queryToStrings("retrieve tote=42 to station=pick, property=\"empty\"");
+
+        var tokens = Tokeniser.stringsToTokens(words);
+
+        assertEquals(Token.TokenType.KEYWORD, tokens.get(0).tokenType);
+        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(1).tokenType);
+        assertEquals(Token.TokenType.EQUALS, tokens.get(2).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(3).tokenType);
+        assertEquals(Token.TokenType.KEYWORD, tokens.get(4).tokenType);
+        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(5).tokenType);
+        assertEquals(Token.TokenType.EQUALS, tokens.get(6).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(7).tokenType);
+        assertEquals(Token.TokenType.COMMA, tokens.get(8).tokenType);
+        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(9).tokenType);
+        assertEquals(Token.TokenType.EQUALS, tokens.get(10).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(11).tokenType);
+        assertEquals(Token.TokenType.END, tokens.get(12).tokenType);
+
+        Tokeniser.checkLegality(tokens);
     }
 }
