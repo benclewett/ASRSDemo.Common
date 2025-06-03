@@ -60,6 +60,11 @@ public class Tote {
         return Objects.hash(amount, sku);
     }
 
+    public static String filter(String value) {
+        return value.toUpperCase();
+    }
+
+
     //region Builder
 
     private static int nextId = 1;
@@ -129,7 +134,7 @@ public class Tote {
             return this;
         }
         public Builder setProperty(String property) {
-            this.properties = this.properties.mutate().addToken(property).build();
+            this.properties = this.properties.mutate().addToken(filter(property)).build();
             return this;
         }
         public Builder setProperties(TokenSet properties) {

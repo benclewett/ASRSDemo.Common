@@ -1,6 +1,7 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import org.junit.jupiter.api.Test;
+import uk.co.codecritical.asrs.common.StationId;
 import uk.co.codecritical.asrs.common.Tote;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,6 +12,11 @@ class TokensToPredicatesTest {
     static final Tote TOTE_2 = Tote.builder(2).setProperty("EMPTY").build();
     static final Tote TOTE_3 = Tote.builder(3).clearProperties().build();
     static final Tote TOTE_4 = Tote.builder(4).setProperty("EMPTY").setProperty("BLUE").build();
+
+    static final StationId STATION_1 = new StationId(1, "DECANT");
+    static final StationId STATION_2 = new StationId(2, "DECANT");
+    static final StationId STATION_3 = new StationId(3, "PICK");
+    static final StationId STATION_4 = new StationId(4, "PICK");
 
     @Test
     void testToteById() {
@@ -150,5 +156,77 @@ class TokensToPredicatesTest {
         assertFalse(p.test(TOTE_2));
         assertTrue(p.test(TOTE_3));
         assertFalse(p.test(TOTE_4));
+    }
+
+    @Test
+    void testStationById() {
+        var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
+                "RETRIEVE tote=1 TO station=1"));
+
+        Tokeniser.assertLegality(tokens);
+
+        var t = new TokensToPredicates(tokens);
+        assertTrue(t.getTotePredicate().isPresent());
+
+        var p = t.getStationPredicate().orElseThrow();
+
+        assertTrue(p.test(STATION_1));
+        assertFalse(p.test(STATION_2));
+        assertFalse(p.test(STATION_3));
+        assertFalse(p.test(STATION_4));
+    }
+
+    @Test
+    void testStationByCapability() {
+        var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
+                "RETRIEVE tote=1 TO capability=decant"));
+
+        Tokeniser.assertLegality(tokens);
+
+        var t = new TokensToPredicates(tokens);
+        assertTrue(t.getTotePredicate().isPresent());
+
+        var p = t.getStationPredicate().orElseThrow();
+
+        assertTrue(p.test(STATION_1));
+        assertTrue(p.test(STATION_2));
+        assertFalse(p.test(STATION_3));
+        assertFalse(p.test(STATION_4));
+    }
+
+    @Test
+    void testStationByCapabilityAndId() {
+        var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
+                "RETRIEVE tote=1 TO station=1 AND capability=decant"));
+
+        Tokeniser.assertLegality(tokens);
+
+        var t = new TokensToPredicates(tokens);
+        assertTrue(t.getTotePredicate().isPresent());
+
+        var p = t.getStationPredicate().orElseThrow();
+
+        assertTrue(p.test(STATION_1));
+        assertFalse(p.test(STATION_2));
+        assertFalse(p.test(STATION_3));
+        assertFalse(p.test(STATION_4));
+    }
+
+    @Test
+    void testStationByCapabilityOrId() {
+        var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
+                "RETRIEVE tote=1 TO station=4 OR capability=decant"));
+
+        Tokeniser.assertLegality(tokens);
+
+        var t = new TokensToPredicates(tokens);
+        assertTrue(t.getTotePredicate().isPresent());
+
+        var p = t.getStationPredicate().orElseThrow();
+
+        assertTrue(p.test(STATION_1));
+        assertTrue(p.test(STATION_2));
+        assertFalse(p.test(STATION_3));
+        assertTrue(p.test(STATION_4));
     }
 }

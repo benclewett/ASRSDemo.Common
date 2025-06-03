@@ -2,6 +2,7 @@ package uk.co.codecritical.asrs.common.dql;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import uk.co.codecritical.asrs.common.StationId;
 import uk.co.codecritical.asrs.common.Tote;
 
 import java.util.Optional;
@@ -11,6 +12,7 @@ public class TokensToPredicates {
     private final ImmutableList<Token> tokens;
 
     private Optional<Predicate<Tote>> totePredicate = Optional.empty();
+    private Optional<Predicate<StationId>> stationPredicate = Optional.empty();
 
     public TokensToPredicates(ImmutableList<Token> tokens) {
         this.tokens = tokens;
@@ -23,6 +25,8 @@ public class TokensToPredicates {
         switch (axiom.entityWord) {
             case TOTE -> addPredicateToteId(axiom.value, axiom.comparison, axiom.preLogic);
             case PROPERTY -> addPredicateToteProperty(axiom.value, axiom.comparison, axiom.preLogic);
+            case STATION -> addPredicateStationId(axiom.value, axiom.comparison, axiom.preLogic);
+            case CAPABILITY -> addPredicateStationCapability(axiom.value, axiom.comparison, axiom.preLogic);
             default ->
                 throw new QueryParserException(
                         QueryParserException.ExceptionType.UNSUPPORTED,
@@ -30,14 +34,57 @@ public class TokensToPredicates {
         }
     }
 
+    private void addPredicateStationCapability(String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
+        Predicate<StationId> p = switch (comparisonWord) {
+            case EQUAL -> (value.isEmpty())
+                    ? station -> station.capability.isEmpty()
+                    : station -> station.capability.equals(StationId.filter(value));
+            case NOT_EQUAL -> (value.isEmpty())
+                    ? station -> !station.capability.isEmpty()
+                    : station -> !station.capability.equals(StationId.filter(value));
+        };
+        stationPredicate = switch (preLogic.orElse(LogicalWord.AND)) {
+            case AND -> stationPredicate.map(predicate -> predicate.and(p))
+                    .or(() -> Optional.of(p));
+            case OR -> stationPredicate.map(predicate -> predicate.or(p))
+                    .or(() -> Optional.of(p));
+            case NOT -> throw new QueryParserException(
+                    QueryParserException.ExceptionType.UNSUPPORTED,
+                    "Logic 'NOT' is currently unsupported.");
+        };
+    }
+
+    private void addPredicateStationId(String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
+        try {
+            var valueI = Integer.parseInt(value);
+            Predicate<StationId> p = switch (comparisonWord) {
+                case EQUAL -> station -> station.id == valueI;
+                case NOT_EQUAL -> station -> station.id != valueI;
+            };
+            stationPredicate = switch (preLogic.orElse(LogicalWord.AND)) {
+                case AND -> stationPredicate.map(predicate -> predicate.and(p))
+                        .or(() -> Optional.of(p));
+                case OR -> stationPredicate.map(predicate -> predicate.or(p))
+                        .or(() -> Optional.of(p));
+                case NOT -> throw new QueryParserException(
+                        QueryParserException.ExceptionType.UNSUPPORTED,
+                        "Logic 'NOT' is currently unsupported.");
+            };
+        } catch (NumberFormatException ignore) {
+            throw new QueryParserException(
+                    QueryParserException.ExceptionType.BAD_INTEGER,
+                    "Value '%s' is not an integer.".formatted(value));
+        }
+    }
+
     private void addPredicateToteProperty(String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
         Predicate<Tote> p = switch (comparisonWord) {
             case EQUAL -> (value.isEmpty())
                     ? tote -> tote.properties.isEmpty()
-                    : tote -> tote.properties.isPresent(value);
+                    : tote -> tote.properties.isPresent(Tote.filter(value));
             case NOT_EQUAL -> (value.isEmpty())
                     ? tote -> !tote.properties.isEmpty()
-                    : tote -> !tote.properties.isPresent(value);
+                    : tote -> !tote.properties.isPresent(Tote.filter(value));
         };
         totePredicate = switch (preLogic.orElse(LogicalWord.AND)) {
             case AND -> totePredicate.map(predicate -> predicate.and(p))
@@ -97,4 +144,8 @@ public class TokensToPredicates {
     public Optional<Predicate<Tote>> getTotePredicate() {
         return totePredicate;
     }
+    public Optional<Predicate<StationId>> getStationPredicate() {
+        return stationPredicate;
+    }
+
 }
