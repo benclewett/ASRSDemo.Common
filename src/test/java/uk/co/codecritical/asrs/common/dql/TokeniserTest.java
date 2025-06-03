@@ -182,25 +182,70 @@ class TokeniserTest {
             assertEquals(target.get(i), out.get(i));
         }
     }
+
     @Test
-    void test() {
-        var words = Tokeniser.queryToStrings("retrieve tote=42 to station=pick, property=\"empty\"");
+    void testDoubleCharacterConjectiuons() {
+        final String input = "a=='b=4',c!=\"d,e,f\"";
+        final ImmutableList<String> target = ImmutableList.of(
+                "a", "==", "b=4", ",", "c", "!=", "d,e,f"
+        );
+
+        var out = Tokeniser.queryToStrings(input);
+
+        assertEquals(target.size(), out.size());
+        for (int i = 0; i < target.size(); i++) {
+            assertEquals(target.get(i), out.get(i));
+        }
+    }
+
+    @Test
+    void testEmptyStrings() {
+        final String input = "a='' or c!=\"\"";
+        final ImmutableList<String> target = ImmutableList.of(
+                "a", "=", "", "or", "c", "!=", ""
+        );
+
+        var out = Tokeniser.queryToStrings(input);
+
+        assertEquals(target.size(), out.size());
+        for (int i = 0; i < target.size(); i++) {
+            assertEquals(target.get(i), out.get(i));
+        }
+    }
+
+    @Test
+    void testTokenType() {
+        var words = Tokeniser.queryToStrings(
+                "retrieve tote=42 or tote!=32 to station=pick, property=\"empty\"");
 
         var tokens = Tokeniser.stringsToTokens(words);
 
-        assertEquals(Token.TokenType.KEYWORD, tokens.get(0).tokenType);
-        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(1).tokenType);
-        assertEquals(Token.TokenType.LOGICAL, tokens.get(2).tokenType);
-        assertEquals(Token.TokenType.VALUE, tokens.get(3).tokenType);
-        assertEquals(Token.TokenType.KEYWORD, tokens.get(4).tokenType);
-        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(5).tokenType);
-        assertEquals(Token.TokenType.LOGICAL, tokens.get(6).tokenType);
-        assertEquals(Token.TokenType.VALUE, tokens.get(7).tokenType);
-        assertEquals(Token.TokenType.COMMA, tokens.get(8).tokenType);
-        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(9).tokenType);
-        assertEquals(Token.TokenType.LOGICAL, tokens.get(10).tokenType);
-        assertEquals(Token.TokenType.VALUE, tokens.get(11).tokenType);
-        assertEquals(Token.TokenType.END, tokens.get(12).tokenType);
+        int i = 0;
+        assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.LOGICAL, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.COMMA, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.END, tokens.get(i++).tokenType);
 
         Tokeniser.assertLegality(tokens);
     }

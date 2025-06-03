@@ -5,21 +5,20 @@ import com.google.common.collect.ImmutableSet;
 
 import java.util.Optional;
 
-public enum LogicalWord {
-    AND("AND", "&&"),
-    OR("OR", "||"),
-    NOT("NOT", "!");
+public enum ComparisonWord {
+    EQUAL("=", "=="),
+    NOT_EQUAL("!=");
 
-    LogicalWord(String... matchingWords) {
+    ComparisonWord(String... matchingWords) {
         this.matchingString = ImmutableSet.copyOf(matchingWords);
     }
     public final ImmutableSet<String> matchingString;
 
-    private static final ImmutableMap<String, LogicalWord> MAP = createMap();
+    private static final ImmutableMap<String, ComparisonWord> MAP = createMap();
 
-    private static ImmutableMap<String, LogicalWord> createMap() {
-        ImmutableMap.Builder<String, LogicalWord> builder = ImmutableMap.builder();
-        for (var e : LogicalWord.values()) {
+    private static ImmutableMap<String, ComparisonWord> createMap() {
+        ImmutableMap.Builder<String, ComparisonWord> builder = ImmutableMap.builder();
+        for (var e : ComparisonWord.values()) {
             for (String word : e.matchingString) {
                 builder.put(word, e);
             }
@@ -27,7 +26,7 @@ public enum LogicalWord {
         return builder.build();
     }
 
-    public static Optional<LogicalWord> mapFromString(String word) {
+    public static Optional<ComparisonWord> mapFromString(String word) {
         return Optional.ofNullable(MAP.get(word.toUpperCase()));
     }
 }

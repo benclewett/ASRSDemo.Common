@@ -29,22 +29,22 @@ public class Tokeniser {
                 if (!Token.TokenType.KEYWORD.equals(token.tokenType)) {
                     throw new QueryParserException(
                             QueryParserException.ExceptionType.UNKNOWN_KEYWORD,
-                            "Query should start with a keyword, not: " + token.token);
+                            "Query should start with a keyword, not: " + token.word);
                 }
-                primary = KeyWord.mapFromString(token.token).get();
+                primary = KeyWord.mapFromString(token.word).get();
                 if (!primary.primaryKeyword) {
                     throw new QueryParserException(
                             QueryParserException.ExceptionType.UNEXPECTED_SYNTAX,
-                            "Query starts with a unexpected keyword: '" + token.token + "'");
+                            "Query starts with a unexpected keyword: '" + token.word + "'");
                 }
             } else {
                 if (!prevToken.getLegalFollowingTokens().contains(token.tokenType)) {
                     throw new QueryParserException(
                             QueryParserException.ExceptionType.UNEXPECTED_SYNTAX,
-                            "Token '" + token.token + "' should not follow '" + prevToken.tokenType + "'");
+                            "Token '" + token.word + "' should not follow '" + prevToken.tokenType + "'");
                 }
                 if (Token.TokenType.KEYWORD.equals(token.tokenType)) {
-                    var keyword = KeyWord.mapFromString(token.token).orElseThrow();
+                    var keyword = KeyWord.mapFromString(token.word).orElseThrow();
                     if (!primary.secondaries.contains(keyword)) {
                         throw new QueryParserException(
                                 QueryParserException.ExceptionType.UNEXPECTED_SYNTAX,
@@ -70,9 +70,12 @@ public class Tokeniser {
             var keyword = KeyWord.mapFromString(word);
             var entityWord = EntityWord.mapFromString(word);
             var logicalWord = LogicalWord.mapFromString(word);
+            var comparisonWord = ComparisonWord.mapFromString(word);
             Token token;
 
-            if (prevToken != null && EQUALS.equals(prevToken.token) ) {
+            if (comparisonWord.isPresent()) {
+                token = new Token(word, Token.TokenType.COMPARISON);
+            } else if (prevToken != null && EQUALS.equals(prevToken.word) ) {
                 token = new Token(word, Token.TokenType.VALUE);
             } else if (keyword.isPresent()) {
                 token = new Token(word, Token.TokenType.KEYWORD);
@@ -170,6 +173,35 @@ public class Tokeniser {
             token.setLength(0);
         }
 
+        var items = builder.build();
+
+        items = parseOutConsecutiveLogical(items);
+
+        return items;
+    }
+
+    /** Turn "!","=" into "!=" and "=","=" int "==" */
+    private static ImmutableList<String> parseOutConsecutiveLogical(ImmutableList<String> items) {
+        final String START = "$$";
+        String prev = START;
+        ImmutableList.Builder<String> builder = ImmutableList.builder();
+        for (var word : items) {
+            if (prev.equals("!") && word.equals("=")) {
+                prev = "!=";
+                continue;
+            }
+            if (prev.equals("=") && word.equals("=")) {
+                prev = "==";
+                continue;
+            }
+            if (!prev.equals(START)) {
+                builder.add(prev);
+            }
+            prev = word;
+        }
+        if (!prev.equals(START)) {
+            builder.add(prev);
+        }
         return builder.build();
     }
 

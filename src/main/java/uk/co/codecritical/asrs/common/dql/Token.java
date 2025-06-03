@@ -4,17 +4,17 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 
 public class Token {
-    public final String token;
+    public final String word;
     public final TokenType tokenType;
-    public Token(String token, TokenType tokenType) {
-        this.token = token;
+    public Token(String word, TokenType tokenType) {
+        this.word = word;
         this.tokenType = tokenType;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("token", token)
+                .add("token", word)
                 .add("tokenType", tokenType)
                 .toString();
     }
@@ -23,6 +23,7 @@ public class Token {
         KEYWORD,
         RESERVED_WORD,
         LOGICAL,
+        COMPARISON,
         COMMA,
         END,
         VALUE
@@ -35,8 +36,9 @@ public class Token {
     public static ImmutableSet<TokenType> getLegalFollowingTokens(TokenType tokenType) {
         return switch (tokenType) {
             case KEYWORD -> ImmutableSet.of(TokenType.RESERVED_WORD, TokenType.KEYWORD, TokenType.END);
-            case RESERVED_WORD -> ImmutableSet.of(TokenType.LOGICAL, TokenType.COMMA, TokenType.KEYWORD, TokenType.END);
-            case LOGICAL -> ImmutableSet.of(TokenType.VALUE, TokenType.RESERVED_WORD);
+            case RESERVED_WORD -> ImmutableSet.of(TokenType.LOGICAL, TokenType.COMPARISON, TokenType.COMMA, TokenType.KEYWORD, TokenType.END);
+            case LOGICAL -> ImmutableSet.of(TokenType.RESERVED_WORD);
+            case COMPARISON -> ImmutableSet.of(TokenType.VALUE);
             case COMMA -> ImmutableSet.of(TokenType.RESERVED_WORD);
             case VALUE -> ImmutableSet.of(TokenType.COMMA, TokenType.KEYWORD, TokenType.END, TokenType.LOGICAL);
             case END -> ImmutableSet.of();

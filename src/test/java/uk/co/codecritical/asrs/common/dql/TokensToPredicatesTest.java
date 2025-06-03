@@ -1,6 +1,5 @@
 package uk.co.codecritical.asrs.common.dql;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import uk.co.codecritical.asrs.common.Tote;
 
@@ -20,7 +19,6 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-
         var t = new TokensToPredicates(tokens);
         assertTrue(t.getTotePredicate().isPresent());
 
@@ -29,6 +27,23 @@ class TokensToPredicatesTest {
         assertTrue(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
         assertFalse(p.test(TOTE_3));
+    }
+
+    @Test
+    void testToteByNotId() {
+        var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
+                "RETRIEVE tote!=1"));
+
+        Tokeniser.assertLegality(tokens);
+
+        var t = new TokensToPredicates(tokens);
+        assertTrue(t.getTotePredicate().isPresent());
+
+        var p = t.getTotePredicate().orElseThrow();
+
+        assertFalse(p.test(TOTE_1));
+        assertTrue(p.test(TOTE_2));
+        assertTrue(p.test(TOTE_3));
     }
 
     @Test
@@ -63,6 +78,42 @@ class TokensToPredicatesTest {
         assertFalse(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
         assertFalse(p.test(TOTE_3));
+    }
+
+    @Test
+    void testToteByIdOrId() {
+        var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
+                "RETRIEVE tote=1 OR tote=2 OR tote=4"));
+
+        Tokeniser.assertLegality(tokens);
+
+        var t = new TokensToPredicates(tokens);
+        assertTrue(t.getTotePredicate().isPresent());
+
+        var p = t.getTotePredicate().orElseThrow();
+
+        assertTrue(p.test(TOTE_1));
+        assertTrue(p.test(TOTE_2));
+        assertFalse(p.test(TOTE_3));
+        assertTrue(p.test(TOTE_4));
+    }
+
+    @Test
+    void testToteByPropertyOrId() {
+        var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
+                "RETRIEVE property='EMPTY' OR tote=2"));
+
+        Tokeniser.assertLegality(tokens);
+
+        var t = new TokensToPredicates(tokens);
+        assertTrue(t.getTotePredicate().isPresent());
+
+        var p = t.getTotePredicate().orElseThrow();
+
+        assertTrue(p.test(TOTE_1));
+        assertTrue(p.test(TOTE_2));
+        assertFalse(p.test(TOTE_3));
+        assertTrue(p.test(TOTE_4));
     }
 
     @Test
