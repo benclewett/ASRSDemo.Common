@@ -1,34 +1,34 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import org.junit.jupiter.api.Test;
-import uk.co.codecritical.asrs.common.StationId;
-import uk.co.codecritical.asrs.common.Tote;
+import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
+import uk.co.codecritical.asrs.common.dql.parser.TokensToPredicates;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TokensToPredicatesTest {
-    static final Tote TOTE_1 = Tote.builder(1).setProperty("EMPTY").build();
-    static final Tote TOTE_2 = Tote.builder(2).setProperty("EMPTY").build();
-    static final Tote TOTE_3 = Tote.builder(3).clearProperties().build();
-    static final Tote TOTE_4 = Tote.builder(4).setProperty("EMPTY").setProperty("BLUE").build();
+    static final TestTote TOTE_1 = new TestTote(1, "EMPTY");
+    static final TestTote TOTE_2 = new TestTote(2, "EMPTY");
+    static final TestTote TOTE_3 = new TestTote(3);
+    static final TestTote TOTE_4 = new TestTote(4, "BLUE", "EMPTY");
 
-    static final StationId STATION_1 = new StationId(1, "DECANT");
-    static final StationId STATION_2 = new StationId(2, "DECANT");
-    static final StationId STATION_3 = new StationId(3, "PICK");
-    static final StationId STATION_4 = new StationId(4, "PICK");
+    static final TestStation STATION_1 = new TestStation(1, "DECANT");
+    static final TestStation STATION_2 = new TestStation(2, "DECANT");
+    static final TestStation STATION_3 = new TestStation(3, "PICK");
+    static final TestStation STATION_4 = new TestStation(4, "PICK");
 
     @Test
     void testToteById() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE tote=1"));
+                "RETRIEVE tote=1"
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getTotePredicate().orElseThrow();
+        var p = t.getTotePredicate();
 
         assertTrue(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
@@ -38,14 +38,14 @@ class TokensToPredicatesTest {
     @Test
     void testToteByNotId() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE tote!=1"));
+                "RETRIEVE tote!=1"
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getTotePredicate().orElseThrow();
+        var p = t.getTotePredicate();
 
         assertFalse(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -55,14 +55,14 @@ class TokensToPredicatesTest {
     @Test
     void testToteByProperty() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE property='EMPTY'"));
+                "RETRIEVE property='EMPTY'"
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getTotePredicate().orElseThrow();
+        var p = t.getTotePredicate();
 
         assertTrue(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -77,9 +77,8 @@ class TokensToPredicatesTest {
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getTotePredicate().orElseThrow();
+        var p = t.getTotePredicate();
 
         assertFalse(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -89,14 +88,14 @@ class TokensToPredicatesTest {
     @Test
     void testToteByIdOrId() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE tote=1 OR tote=2 OR tote=4"));
+                "RETRIEVE tote=1 OR tote=2 OR tote=4"
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getTotePredicate().orElseThrow();
+        var p = t.getTotePredicate();
 
         assertTrue(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -107,14 +106,14 @@ class TokensToPredicatesTest {
     @Test
     void testToteByPropertyOrId() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE property='EMPTY' OR tote=2"));
+                "RETRIEVE property='EMPTY' OR tote=2"
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getTotePredicate().orElseThrow();
+        var p = t.getTotePredicate();
 
         assertTrue(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -125,14 +124,14 @@ class TokensToPredicatesTest {
     @Test
     void testToteByPropertyAndProperty() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE property='EMPTY' AND property=\"BLUE\""));
+                "RETRIEVE property='EMPTY' AND property=\"BLUE\"")
+        );
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getTotePredicate().orElseThrow();
+        var p = t.getTotePredicate();
 
         assertFalse(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
@@ -143,14 +142,14 @@ class TokensToPredicatesTest {
     @Test
     void testToteByNoProperty() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE property=\"\""));
+                "RETRIEVE property=\"\""
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getTotePredicate().orElseThrow();
+        var p = t.getTotePredicate();
 
         assertFalse(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
@@ -161,14 +160,14 @@ class TokensToPredicatesTest {
     @Test
     void testStationById() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE tote=1 TO station=1"));
+                "RETRIEVE tote=1 TO station=1"
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getStationPredicate().orElseThrow();
+        var p = t.getStationPredicate();
 
         assertTrue(p.test(STATION_1));
         assertFalse(p.test(STATION_2));
@@ -179,14 +178,14 @@ class TokensToPredicatesTest {
     @Test
     void testStationByCapability() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE tote=1 TO capability=decant"));
+                "RETRIEVE tote=1 TO capability=decant"
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getStationPredicate().orElseThrow();
+        var p = t.getStationPredicate();
 
         assertTrue(p.test(STATION_1));
         assertTrue(p.test(STATION_2));
@@ -197,14 +196,14 @@ class TokensToPredicatesTest {
     @Test
     void testStationByCapabilityAndId() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE tote=1 TO station=1 AND capability=decant"));
+                "RETRIEVE tote=1 TO station=1 AND capability=decant"
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getStationPredicate().orElseThrow();
+        var p = t.getStationPredicate();
 
         assertTrue(p.test(STATION_1));
         assertFalse(p.test(STATION_2));
@@ -215,14 +214,14 @@ class TokensToPredicatesTest {
     @Test
     void testStationByCapabilityOrId() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
-                "RETRIEVE tote=1 TO station=4 OR capability=decant"));
+                "RETRIEVE tote=1 TO station=4 OR capability=decant"
+        ));
 
         Tokeniser.assertLegality(tokens);
 
         var t = new TokensToPredicates(tokens);
-        assertTrue(t.getTotePredicate().isPresent());
 
-        var p = t.getStationPredicate().orElseThrow();
+        var p = t.getStationPredicate();
 
         assertTrue(p.test(STATION_1));
         assertTrue(p.test(STATION_2));

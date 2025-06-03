@@ -1,18 +1,19 @@
-package uk.co.codecritical.asrs.common.dql;
+package uk.co.codecritical.asrs.common.dql.parser;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import uk.co.codecritical.asrs.common.StationId;
-import uk.co.codecritical.asrs.common.Tote;
+import uk.co.codecritical.asrs.common.dql.entity.StationDql;
+import uk.co.codecritical.asrs.common.dql.entity.ToteDql;
 
+import java.security.Key;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 public class TokensToPredicates {
     private final ImmutableList<Token> tokens;
 
-    private Optional<Predicate<Tote>> totePredicate = Optional.empty();
-    private Optional<Predicate<StationId>> stationPredicate = Optional.empty();
+    private Optional<Predicate<ToteDql>> totePredicate = Optional.empty();
+    private Optional<Predicate<StationDql>> stationPredicate = Optional.empty();
 
     public TokensToPredicates(ImmutableList<Token> tokens) {
         this.tokens = tokens;
@@ -35,13 +36,13 @@ public class TokensToPredicates {
     }
 
     private void addPredicateStationCapability(String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
-        Predicate<StationId> p = switch (comparisonWord) {
+        Predicate<StationDql> p = switch (comparisonWord) {
             case EQUAL -> (value.isEmpty())
-                    ? station -> station.capability.isEmpty()
-                    : station -> station.capability.equals(StationId.filter(value));
+                    ? station -> station.getCapability().isEmpty()
+                    : station -> station.getCapability().map(c -> station.filter(value).equals(c)).orElse(false);
             case NOT_EQUAL -> (value.isEmpty())
-                    ? station -> !station.capability.isEmpty()
-                    : station -> !station.capability.equals(StationId.filter(value));
+                    ? station -> station.getCapability().isPresent()
+                    : station -> !station.getCapability().map(c -> station.filter(value).equals(c)).orElse(false);
         };
         stationPredicate = switch (preLogic.orElse(LogicalWord.AND)) {
             case AND -> stationPredicate.map(predicate -> predicate.and(p))
@@ -57,9 +58,9 @@ public class TokensToPredicates {
     private void addPredicateStationId(String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
         try {
             var valueI = Integer.parseInt(value);
-            Predicate<StationId> p = switch (comparisonWord) {
-                case EQUAL -> station -> station.id == valueI;
-                case NOT_EQUAL -> station -> station.id != valueI;
+            Predicate<StationDql> p = switch (comparisonWord) {
+                case EQUAL -> station -> station.getId() == valueI;
+                case NOT_EQUAL -> station -> station.getId() != valueI;
             };
             stationPredicate = switch (preLogic.orElse(LogicalWord.AND)) {
                 case AND -> stationPredicate.map(predicate -> predicate.and(p))
@@ -78,13 +79,13 @@ public class TokensToPredicates {
     }
 
     private void addPredicateToteProperty(String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
-        Predicate<Tote> p = switch (comparisonWord) {
+        Predicate<ToteDql> p = switch (comparisonWord) {
             case EQUAL -> (value.isEmpty())
-                    ? tote -> tote.properties.isEmpty()
-                    : tote -> tote.properties.isPresent(Tote.filter(value));
+                    ? tote -> tote.getProperties().isEmpty()
+                    : tote -> tote.getProperties().contains(tote.filter(value));
             case NOT_EQUAL -> (value.isEmpty())
-                    ? tote -> !tote.properties.isEmpty()
-                    : tote -> !tote.properties.isPresent(Tote.filter(value));
+                    ? tote -> !tote.getProperties().isEmpty()
+                    : tote -> !tote.getProperties().contains(tote.filter(value));
         };
         totePredicate = switch (preLogic.orElse(LogicalWord.AND)) {
             case AND -> totePredicate.map(predicate -> predicate.and(p))
@@ -100,9 +101,9 @@ public class TokensToPredicates {
     private void addPredicateToteId(String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
         try {
             var valueI = Integer.parseInt(value);
-            Predicate<Tote> p = switch (comparisonWord) {
-                case EQUAL -> tote -> tote.id == valueI;
-                case NOT_EQUAL -> tote -> tote.id != valueI;
+            Predicate<ToteDql> p = switch (comparisonWord) {
+                case EQUAL -> tote -> tote.getId() == valueI;
+                case NOT_EQUAL -> tote -> tote.getId() != valueI;
             };
             totePredicate = switch (preLogic.orElse(LogicalWord.AND)) {
                 case AND -> totePredicate.map(predicate -> predicate.and(p))
@@ -139,13 +140,25 @@ public class TokensToPredicates {
         return builder.build();
     }
 
+    public KeyWord getKeyWord() {
+        return KeyWord.mapFromString(tokens.get(0).word).orElseThrow();
+    }
+
     private record Axiom (Optional<LogicalWord> preLogic, EntityWord entityWord, ComparisonWord comparison, String value) {}
 
-    public Optional<Predicate<Tote>> getTotePredicate() {
-        return totePredicate;
+    //region Predicates
+
+    static final Predicate<ToteDql> ALL_TOES = toteDql -> true;
+    static final Predicate<StationDql> ALL_STATIONS = toteDql -> true;
+
+    public Predicate<ToteDql> getTotePredicate() {
+        return totePredicate.orElse(ALL_TOES);
     }
-    public Optional<Predicate<StationId>> getStationPredicate() {
-        return stationPredicate;
+
+    public Predicate<StationDql> getStationPredicate() {
+        return stationPredicate.orElse(ALL_STATIONS);
     }
+
+    //endregion
 
 }

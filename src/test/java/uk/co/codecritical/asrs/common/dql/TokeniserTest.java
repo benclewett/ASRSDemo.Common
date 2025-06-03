@@ -2,6 +2,8 @@ package uk.co.codecritical.asrs.common.dql;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
+import uk.co.codecritical.asrs.common.dql.parser.Token;
+import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
