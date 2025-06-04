@@ -78,6 +78,11 @@ public class Tote implements ToteDql {
     }
 
     @Override
+    public int getAmount() {
+        return amount;
+    }
+
+    @Override
     public void setProperties(ImmutableSet<String> properties) {
         this.properties = TokenSet.builder().addTokens(properties).build();
     }

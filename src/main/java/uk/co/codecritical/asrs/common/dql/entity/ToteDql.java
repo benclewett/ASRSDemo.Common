@@ -7,6 +7,7 @@ public interface ToteDql {
 
     int getId();
     ImmutableSet<String> getProperties();
+    int getAmount();
 
     void setProperties(ImmutableSet<String> properties);
 }

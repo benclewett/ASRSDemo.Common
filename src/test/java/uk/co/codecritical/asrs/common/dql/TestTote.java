@@ -28,6 +28,11 @@ public class TestTote implements ToteDql {
     }
 
     @Override
+    public int getAmount() {
+        return 0;
+    }
+
+    @Override
     public void setProperties(ImmutableSet<String> properties) {
         this.properties = properties;
     }
