@@ -18,8 +18,8 @@ public class TestGrid implements DqlGrid {
     private static final ImmutableList<StationDql> STATIONS = ImmutableList.of(
         new TestStation(1, "DECANT"),
         new TestStation(2, "DECANT"),
-        new TestStation(3, "PICK"),
-        new TestStation(4, "PICK")
+        new TestStation(3, "PICKING"),
+        new TestStation(4, "PICKING")
     );
 
     public Optional<ToteDql> selectedTote = Optional.empty();

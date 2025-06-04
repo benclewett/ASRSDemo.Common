@@ -61,7 +61,7 @@ public class DqlExecutorTest {
 
     @Test
     void testNamedTotesAndStations() {
-        var query = executor.execute("RETRIEVE property=empty TO capability=pick");
+        var query = executor.execute("RETRIEVE property=empty TO capability=picking");
         assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
         assertTrue(grid.selectedTote.isPresent());
         assertTrue(grid.selectedStation.isPresent());

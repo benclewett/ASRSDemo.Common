@@ -1,6 +1,7 @@
 package uk.co.codecritical.asrs.common.dql.executor;
 
 import uk.co.codecritical.asrs.common.dql.entity.DqlGrid;
+import uk.co.codecritical.asrs.common.dql.parser.ExceptionType;
 import uk.co.codecritical.asrs.common.dql.parser.QueryParserException;
 import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
 import uk.co.codecritical.asrs.common.dql.parser.TokensToPredicates;
@@ -31,7 +32,7 @@ public class DqlExecutor {
                     dqlGrid.binToStation(totes, stations);
                 }
                 default -> throw new QueryParserException(
-                        QueryParserException.ExceptionType.UNSUPPORTED,
+                        ExceptionType.UNSUPPORTED,
                         "Unsupported keyword: " + tokensToPredicates.getKeyWord());
             }
 

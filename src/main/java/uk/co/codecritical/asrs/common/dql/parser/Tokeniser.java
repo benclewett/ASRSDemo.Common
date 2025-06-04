@@ -17,7 +17,7 @@ public class Tokeniser {
     //region Assert Legality
 
     public static void assertLegality(ImmutableList<Token> tokens) {
-        KeyWord primary = null;
+        KeyWord keyWord = null;
         Token prevToken = null;
         for (int i = 0; i < tokens.size(); i++) {
             var token = tokens.get(i);
@@ -28,28 +28,29 @@ public class Tokeniser {
             if (i == 0) {
                 if (!Token.TokenType.KEYWORD.equals(token.tokenType)) {
                     throw new QueryParserException(
-                            QueryParserException.ExceptionType.UNKNOWN_KEYWORD,
+                            ExceptionType.UNKNOWN_KEYWORD,
                             "Query should start with a keyword, not: " + token.word);
                 }
-                primary = KeyWord.mapFromString(token.word).get();
-                if (!primary.primaryKeyword) {
+                keyWord = KeyWord.mapFromString(token.word).get();
+                if (!keyWord.primaryKeyword) {
                     throw new QueryParserException(
-                            QueryParserException.ExceptionType.UNEXPECTED_SYNTAX,
+                            ExceptionType.UNEXPECTED_SYNTAX,
                             "Query starts with a unexpected keyword: '" + token.word + "'");
                 }
             } else {
                 if (!prevToken.getLegalFollowingTokens().contains(token.tokenType)) {
                     throw new QueryParserException(
-                            QueryParserException.ExceptionType.UNEXPECTED_SYNTAX,
+                            ExceptionType.UNEXPECTED_SYNTAX,
                             "Token '" + token.word + "' should not follow '" + prevToken.tokenType + "'");
                 }
                 if (Token.TokenType.KEYWORD.equals(token.tokenType)) {
                     var keyword = KeyWord.mapFromString(token.word).orElseThrow();
-                    if (!primary.secondaries.contains(keyword)) {
+                    if (!keyWord.secondaries.contains(keyword)) {
                         throw new QueryParserException(
-                                QueryParserException.ExceptionType.UNEXPECTED_SYNTAX,
-                                "KeyWord '" + keyword + "' should not follow " + primary + "'");
+                                ExceptionType.UNEXPECTED_SYNTAX,
+                                "KeyWord '" + keyword + "' should not follow " + keyWord + "'");
                     }
+                    keyWord = keyword;
                 }
             }
 
@@ -64,29 +65,53 @@ public class Tokeniser {
     public static ImmutableList<Token> stringsToTokens(ImmutableList<String> strings) {
         ImmutableList.Builder<Token> builder = ImmutableList.builder();
 
+        boolean querySetSection = false;
         Token prevToken = null;
         for (int i = 0; i < strings.size(); i++) {
             String word = strings.get(i);
-            var keyword = KeyWord.mapFromString(word);
-            var entityWord = EntityWord.mapFromString(word);
-            var logicalWord = LogicalWord.mapFromString(word);
-            var comparisonWord = ComparisonWord.mapFromString(word);
             Token token;
 
-            if (comparisonWord.isPresent()) {
-                token = new Token(word, Token.TokenType.COMPARISON);
-            } else if (prevToken != null && EQUALS.equals(prevToken.word) ) {
-                token = new Token(word, Token.TokenType.VALUE);
-            } else if (keyword.isPresent()) {
-                token = new Token(word, Token.TokenType.KEYWORD);
-            } else if (entityWord.isPresent()) {
-                token = new Token(word, Token.TokenType.RESERVED_WORD);
-            } else if (logicalWord.isPresent()) {
-                token = new Token(word, Token.TokenType.LOGICAL);
-            } else if (word.equals(",")) {
-                token = new Token(word, Token.TokenType.COMMA);
+            var keyword = KeyWord.mapFromString(word);
+            if (keyword.isPresent()) {
+                querySetSection = KeyWord.SET.equals(keyword.get());
+                if (querySetSection) {
+                    token = new Token(word, Token.TokenType.SET);
+                } else {
+                    token = new Token(word, Token.TokenType.KEYWORD);
+                }
+                builder.add(token);
+                prevToken = token;
+                continue;
+            }
+
+            if (querySetSection) {
+                var entityWord = EntityWord.mapFromString(word);
+                if (entityWord.isPresent()) {
+                    token = new Token(word, Token.TokenType.METRIC_NAME);
+                } else if (EQUALS.equals(word)) {
+                    token = new Token(word, Token.TokenType.ASSIGN);
+                } else if (word.equals(",")) {
+                    token = new Token(word, Token.TokenType.COMMA);
+                } else {
+                    token = new Token(word, Token.TokenType.METRIC_VALUE);
+                }
             } else {
-                token = new Token(word, Token.TokenType.VALUE);
+                var entityWord = EntityWord.mapFromString(word);
+                var logicalWord = LogicalWord.mapFromString(word);
+                var comparisonWord = ComparisonWord.mapFromString(word);
+                if (comparisonWord.isPresent()) {
+                    token = new Token(word, Token.TokenType.COMPARISON);
+                } else if (prevToken != null && EQUALS.equals(prevToken.word)) {
+                    token = new Token(word, Token.TokenType.VALUE);
+                } else if (entityWord.isPresent()) {
+                    token = new Token(word, Token.TokenType.ENTITY);
+                } else if (logicalWord.isPresent()) {
+                    token = new Token(word, Token.TokenType.LOGICAL);
+                } else if (word.equals(",")) {
+                    token = new Token(word, Token.TokenType.COMMA);
+                } else {
+                    token = new Token(word, Token.TokenType.VALUE);
+                }
             }
 
             builder.add(token);
@@ -100,13 +125,13 @@ public class Tokeniser {
 
     //endregion
 
-    //region Query to String
+    //region Query to Strings
 
     enum ParseState {
         BETWEEN,
         IN_TOKEN,
         IN_DOUBLE_QUOTE,
-        IN_SINGLE_QUOTE
+        IN_SINGLE_QUOTE;
     }
 
     public static ImmutableList<String> queryToStrings(String query) {

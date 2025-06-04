@@ -21,12 +21,15 @@ public class Token {
 
     public enum TokenType {
         KEYWORD,
-        RESERVED_WORD,
+        ENTITY,
         LOGICAL,
         COMPARISON,
         COMMA,
         END,
-        VALUE
+        VALUE,
+        SET,
+        METRIC_NAME,
+        ASSIGN, METRIC_VALUE
     }
 
     public ImmutableSet<TokenType> getLegalFollowingTokens() {
@@ -35,13 +38,17 @@ public class Token {
 
     public static ImmutableSet<TokenType> getLegalFollowingTokens(TokenType tokenType) {
         return switch (tokenType) {
-            case KEYWORD -> ImmutableSet.of(TokenType.RESERVED_WORD, TokenType.KEYWORD, TokenType.END);
-            case RESERVED_WORD -> ImmutableSet.of(TokenType.LOGICAL, TokenType.COMPARISON, TokenType.COMMA, TokenType.KEYWORD, TokenType.END);
-            case LOGICAL -> ImmutableSet.of(TokenType.RESERVED_WORD);
+            case KEYWORD -> ImmutableSet.of(TokenType.ENTITY, TokenType.KEYWORD, TokenType.END);
+            case ENTITY -> ImmutableSet.of(TokenType.LOGICAL, TokenType.COMPARISON, TokenType.KEYWORD, TokenType.END);
+            case LOGICAL -> ImmutableSet.of(TokenType.ENTITY);
             case COMPARISON -> ImmutableSet.of(TokenType.VALUE);
-            case COMMA -> ImmutableSet.of(TokenType.RESERVED_WORD);
-            case VALUE -> ImmutableSet.of(TokenType.COMMA, TokenType.KEYWORD, TokenType.END, TokenType.LOGICAL);
+            case COMMA -> ImmutableSet.of(TokenType.METRIC_NAME);
+            case VALUE -> ImmutableSet.of(TokenType.COMMA, TokenType.KEYWORD, TokenType.END, TokenType.LOGICAL, TokenType.SET);
             case END -> ImmutableSet.of();
+            case SET -> ImmutableSet.of(TokenType.METRIC_NAME);
+            case METRIC_NAME -> ImmutableSet.of(TokenType.ASSIGN);
+            case ASSIGN -> ImmutableSet.of(TokenType.METRIC_VALUE);
+            case METRIC_VALUE -> ImmutableSet.of(TokenType.COMMA, TokenType.END);
         };
     }
 }

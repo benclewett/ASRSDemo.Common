@@ -12,10 +12,10 @@ import java.util.Optional;
 public enum KeyWord {
     // Secondary:
     SET(false),
-    INTO(false),
-    TO(false),
-    FROM(false),
-    WITH(false),
+    INTO(false, SET),
+    TO(false, SET),
+    FROM(false, SET),
+    WITH(false, SET),
 
     // Primary:
     SELECT(true, FROM),

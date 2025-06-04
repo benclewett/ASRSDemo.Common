@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableSet;
 import uk.co.codecritical.asrs.common.dql.entity.StationDql;
 import uk.co.codecritical.asrs.common.dql.entity.ToteDql;
 
-import java.security.Key;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -30,7 +29,7 @@ public class TokensToPredicates {
             case CAPABILITY -> addPredicateStationCapability(axiom.value, axiom.comparison, axiom.preLogic);
             default ->
                 throw new QueryParserException(
-                        QueryParserException.ExceptionType.UNSUPPORTED,
+                        ExceptionType.UNSUPPORTED,
                         "Entity '%s' is currently unsupported.".formatted(axiom.entityWord.name()));
         }
     }
@@ -50,7 +49,7 @@ public class TokensToPredicates {
             case OR -> stationPredicate.map(predicate -> predicate.or(p))
                     .or(() -> Optional.of(p));
             case NOT -> throw new QueryParserException(
-                    QueryParserException.ExceptionType.UNSUPPORTED,
+                    ExceptionType.UNSUPPORTED,
                     "Logic 'NOT' is currently unsupported.");
         };
     }
@@ -68,12 +67,12 @@ public class TokensToPredicates {
                 case OR -> stationPredicate.map(predicate -> predicate.or(p))
                         .or(() -> Optional.of(p));
                 case NOT -> throw new QueryParserException(
-                        QueryParserException.ExceptionType.UNSUPPORTED,
+                        ExceptionType.UNSUPPORTED,
                         "Logic 'NOT' is currently unsupported.");
             };
         } catch (NumberFormatException ignore) {
             throw new QueryParserException(
-                    QueryParserException.ExceptionType.BAD_INTEGER,
+                    ExceptionType.BAD_INTEGER,
                     "Value '%s' is not an integer.".formatted(value));
         }
     }
@@ -93,7 +92,7 @@ public class TokensToPredicates {
             case OR -> totePredicate.map(predicate -> predicate.or(p))
                     .or(() -> Optional.of(p));
             case NOT -> throw new QueryParserException(
-                    QueryParserException.ExceptionType.UNSUPPORTED,
+                    ExceptionType.UNSUPPORTED,
                     "Logic 'NOT' is currently unsupported.");
         };
     }
@@ -111,12 +110,12 @@ public class TokensToPredicates {
                 case OR -> totePredicate.map(predicate -> predicate.or(p))
                         .or(() -> Optional.of(p));
                 case NOT -> throw new QueryParserException(
-                        QueryParserException.ExceptionType.UNSUPPORTED,
+                        ExceptionType.UNSUPPORTED,
                         "Logic 'NOT' is currently unsupported.");
             };
         } catch (NumberFormatException ignore) {
             throw new QueryParserException(
-                    QueryParserException.ExceptionType.BAD_INTEGER,
+                    ExceptionType.BAD_INTEGER,
                     "Value '%s' is not an integer.".formatted(value));
         }
     }
@@ -124,7 +123,7 @@ public class TokensToPredicates {
     private ImmutableSet<Axiom> getAxioms() {
         ImmutableSet.Builder<Axiom> builder = ImmutableSet.builder();
         for (int i = 1; i < tokens.size() - 2; i++) {
-            if (Token.TokenType.RESERVED_WORD.equals(tokens.get(i).tokenType)
+            if (Token.TokenType.ENTITY.equals(tokens.get(i).tokenType)
                 && Token.TokenType.COMPARISON.equals(tokens.get(i + 1).tokenType)
                 && Token.TokenType.VALUE.equals(tokens.get(i + 2).tokenType)) {
                 Optional<LogicalWord> logic = (i > 1)

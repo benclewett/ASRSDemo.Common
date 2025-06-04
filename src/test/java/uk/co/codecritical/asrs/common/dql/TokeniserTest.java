@@ -218,34 +218,77 @@ class TokeniserTest {
     @Test
     void testTokenType() {
         var words = Tokeniser.queryToStrings(
-                "retrieve tote=42 or tote!=32 to station=pick, property=\"empty\"");
+                "retrieve tote=42 or tote!=32 to station=picking AND property=\"empty\"");
 
         var tokens = Tokeniser.stringsToTokens(words);
 
         int i = 0;
         assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
 
         assertEquals(Token.TokenType.LOGICAL, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
 
         assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.LOGICAL, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.END, tokens.get(i++).tokenType);
+
+        Tokeniser.assertLegality(tokens);
+    }
+
+    @Test
+    void testTokenTypeWithSet() {
+        var words = Tokeniser.queryToStrings(
+                "retrieve tote=42 or tote!=32 to station=picking set station=picking, property=\"empty\"");
+
+        var tokens = Tokeniser.stringsToTokens(words);
+
+        int i = 0;
+        assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.LOGICAL, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.SET, tokens.get(i++).tokenType);
+
+        assertEquals(Token.TokenType.METRIC_NAME, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.ASSIGN, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.METRIC_VALUE, tokens.get(i++).tokenType);
 
         assertEquals(Token.TokenType.COMMA, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.RESERVED_WORD, tokens.get(i++).tokenType);
-        assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
-        assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.METRIC_NAME, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.ASSIGN, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.METRIC_VALUE, tokens.get(i++).tokenType);
 
         assertEquals(Token.TokenType.END, tokens.get(i++).tokenType);
 

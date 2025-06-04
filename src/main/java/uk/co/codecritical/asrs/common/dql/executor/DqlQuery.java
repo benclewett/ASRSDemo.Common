@@ -1,7 +1,10 @@
 package uk.co.codecritical.asrs.common.dql.executor;
 
 import com.google.common.base.MoreObjects;
+import uk.co.codecritical.asrs.common.dql.parser.ExceptionType;
+import uk.co.codecritical.asrs.common.dql.parser.QueryParserException;
 
+import javax.annotation.CheckForNull;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -9,12 +12,19 @@ public class DqlQuery {
     public final String query;
     public final String queryId;
     public final QueryResponse queryResponse;
+    public final @CheckForNull ExceptionType errorType;
     public final String errorMessage;
 
-    private DqlQuery(String query, String queryId, QueryResponse queryResponse, String errorMessage) {
+    private DqlQuery(
+            String query,
+            String queryId,
+            QueryResponse queryResponse,
+            @CheckForNull ExceptionType errorType,
+            String errorMessage) {
         this.query = query;
         this.queryId = queryId;
         this.queryResponse = queryResponse;
+        this.errorType = errorType;
         this.errorMessage = errorMessage;
     }
 
@@ -23,6 +33,7 @@ public class DqlQuery {
                 "",
                 UUID.randomUUID().toString().substring(0, 5),
                 QueryResponse.NEW,
+                null,
                 "");
     }
 
@@ -32,6 +43,7 @@ public class DqlQuery {
                 .add("query", query)
                 .add("queryId", queryId)
                 .add("queryResponse", queryResponse)
+                .add("errorType", errorType)
                 .add("errorMessage", errorMessage)
                 .toString();
     }
@@ -70,6 +82,7 @@ public class DqlQuery {
         String query = null;
         String queryId = null;
         QueryResponse queryResponse = null;
+        @CheckForNull ExceptionType errorType;
         String errorMessage = null;
         public Builder() {
         }
@@ -85,6 +98,10 @@ public class DqlQuery {
             this.queryResponse = queryResponse;
             return this;
         }
+        public Builder setErrorType(@CheckForNull ExceptionType errorType) {
+            this.errorType = errorType;
+            return this;
+        }
         public Builder setErrorMessage(String errorMessage) {
             this.errorMessage = errorMessage;
             return this;
@@ -98,6 +115,7 @@ public class DqlQuery {
                     query,
                     queryId,
                     queryResponse,
+                    errorType,
                     errorMessage);
         }
     }
