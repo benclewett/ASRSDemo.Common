@@ -9,6 +9,7 @@ public class QueryParserException extends RuntimeException {
         UNEXPECTED_SYNTAX,
         UNSUPPORTED,
         BAD_INTEGER,
+        NO_RESULT
     }
 
     private final ExceptionType exceptionType;

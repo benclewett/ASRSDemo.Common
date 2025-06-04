@@ -2,11 +2,13 @@ package uk.co.codecritical.asrs.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableSet;
+import uk.co.codecritical.asrs.common.dql.entity.ToteDql;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public class Tote {
+public class Tote implements ToteDql {
     public final int id;
     @JsonIgnore
     public final Optional<Sku> sku;
@@ -14,7 +16,7 @@ public class Tote {
     public final int amount;
     @JsonIgnore
     public final Optional<Pos> gridPos;
-    public final TokenSet properties;
+    private TokenSet properties;
 
     private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties) {
         this.id = id;
@@ -60,10 +62,25 @@ public class Tote {
         return Objects.hash(amount, sku);
     }
 
-    public static String filter(String value) {
-        return value.toUpperCase();
+    @Override
+    public String filter(String value) {
+        return TokenSet.filter(value);
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public ImmutableSet<String> getProperties() {
+        return properties.get();
+    }
+
+    @Override
+    public void setProperties(ImmutableSet<String> properties) {
+        this.properties = TokenSet.builder().addTokens(properties).build();
+    }
 
     //region Builder
 
@@ -134,7 +151,7 @@ public class Tote {
             return this;
         }
         public Builder setProperty(String property) {
-            this.properties = this.properties.mutate().addToken(filter(property)).build();
+            this.properties = this.properties.mutate().addToken(TokenSet.filter(property)).build();
             return this;
         }
         public Builder setProperties(TokenSet properties) {

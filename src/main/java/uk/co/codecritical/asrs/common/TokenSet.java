@@ -31,6 +31,10 @@ public class TokenSet {
                 .toString();
     }
 
+    public ImmutableSet<String> get() {
+        return tokens;
+    }
+
     public static String filter(String token) {
         return token.toUpperCase().strip();
     }
