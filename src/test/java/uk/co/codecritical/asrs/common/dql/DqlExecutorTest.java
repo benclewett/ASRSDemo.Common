@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.codecritical.asrs.common.dql.executor.DqlExecutor;
 import uk.co.codecritical.asrs.common.dql.executor.DqlQuery;
+import uk.co.codecritical.asrs.common.dql.parser.Assignment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -39,6 +40,7 @@ public class DqlExecutorTest {
         assertTrue(grid.selectedStation.isPresent());
         assertEquals(1, grid.selectedTote.get().getId());
         assertEquals(1, grid.selectedStation.get().getId());
+        assertEquals(grid.assignments.size(), 0);
     }
 
     @Test
@@ -49,6 +51,7 @@ public class DqlExecutorTest {
         assertTrue(grid.selectedStation.isPresent());
         assertEquals(2, grid.selectedTote.get().getId());
         assertEquals(3, grid.selectedStation.get().getId());
+        assertEquals(grid.assignments.size(), 0);
     }
 
     @Test
@@ -57,6 +60,7 @@ public class DqlExecutorTest {
         assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
         assertFalse(grid.selectedTote.isPresent());
         assertFalse(grid.selectedStation.isPresent());
+        assertEquals(grid.assignments.size(), 0);
     }
 
     @Test
@@ -67,5 +71,23 @@ public class DqlExecutorTest {
         assertTrue(grid.selectedStation.isPresent());
         assertEquals(1, grid.selectedTote.get().getId());
         assertEquals(3, grid.selectedStation.get().getId());
+        assertEquals(grid.assignments.size(), 0);
+    }
+
+    @Test
+    void testAssignments() {
+        final Assignment ab = new Assignment("tote", "a");
+        final Assignment cd = new Assignment("tote", "b");
+        final Assignment ef = new Assignment("tote", "c");
+        var query = executor.execute("RETRIEVE property=empty TO capability=picking SET tote=a, tote=b, tote=c");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertTrue(grid.selectedTote.isPresent());
+        assertTrue(grid.selectedStation.isPresent());
+        assertEquals(1, grid.selectedTote.get().getId());
+        assertEquals(3, grid.selectedStation.get().getId());
+        assertEquals(grid.assignments.size(), 3);
+        assertEquals(grid.assignments.get(0), ab);
+        assertEquals(grid.assignments.get(1), cd);
+        assertEquals(grid.assignments.get(2), ef);
     }
 }

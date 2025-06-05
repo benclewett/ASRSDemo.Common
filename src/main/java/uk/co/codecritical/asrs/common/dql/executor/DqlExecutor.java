@@ -1,8 +1,8 @@
 package uk.co.codecritical.asrs.common.dql.executor;
 
 import uk.co.codecritical.asrs.common.dql.entity.DqlGrid;
-import uk.co.codecritical.asrs.common.dql.parser.ExceptionType;
-import uk.co.codecritical.asrs.common.dql.parser.QueryParserException;
+import uk.co.codecritical.asrs.common.dql.parser.DqlExceptionType;
+import uk.co.codecritical.asrs.common.dql.parser.DqlException;
 import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
 import uk.co.codecritical.asrs.common.dql.parser.TokensToPredicates;
 
@@ -27,19 +27,21 @@ public class DqlExecutor {
 
             switch (tokensToPredicates.getKeyWord()) {
                 case RETRIEVE -> {
-                    var totes = tokensToPredicates.getTotePredicate();
-                    var stations = tokensToPredicates.getStationPredicate();
-                    dqlGrid.binToStation(totes, stations);
+                    dqlGrid.toteRetrievalDql(
+                            tokensToPredicates.getTotePredicate(),
+                            tokensToPredicates.getStationPredicate(),
+                            tokensToPredicates.getAssignment());
                 }
-                default -> throw new QueryParserException(
-                        ExceptionType.UNSUPPORTED,
+                default -> throw new DqlException(
+                        DqlExceptionType.UNSUPPORTED,
                         "Unsupported keyword: " + tokensToPredicates.getKeyWord());
             }
 
             dqlQuery = dqlQuery.mutate().setQueryResponse(DqlQuery.QueryResponse.OK).build();
-        } catch (QueryParserException ex) {
+        } catch (DqlException ex) {
             dqlQuery = dqlQuery.mutate()
                     .setErrorMessage(ex.getMessage())
+                    .setErrorType(ex.dqlExceptionType)
                     .setQueryResponse(DqlQuery.QueryResponse.FAIL)
                     .build();
         }

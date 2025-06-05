@@ -1,8 +1,7 @@
 package uk.co.codecritical.asrs.common.dql.executor;
 
 import com.google.common.base.MoreObjects;
-import uk.co.codecritical.asrs.common.dql.parser.ExceptionType;
-import uk.co.codecritical.asrs.common.dql.parser.QueryParserException;
+import uk.co.codecritical.asrs.common.dql.parser.DqlExceptionType;
 
 import javax.annotation.CheckForNull;
 import java.util.Objects;
@@ -12,14 +11,14 @@ public class DqlQuery {
     public final String query;
     public final String queryId;
     public final QueryResponse queryResponse;
-    public final @CheckForNull ExceptionType errorType;
+    public final @CheckForNull DqlExceptionType errorType;
     public final String errorMessage;
 
     private DqlQuery(
             String query,
             String queryId,
             QueryResponse queryResponse,
-            @CheckForNull ExceptionType errorType,
+            @CheckForNull DqlExceptionType errorType,
             String errorMessage) {
         this.query = query;
         this.queryId = queryId;
@@ -82,7 +81,8 @@ public class DqlQuery {
         String query = null;
         String queryId = null;
         QueryResponse queryResponse = null;
-        @CheckForNull ExceptionType errorType;
+        @CheckForNull
+        DqlExceptionType errorType;
         String errorMessage = null;
         public Builder() {
         }
@@ -98,7 +98,7 @@ public class DqlQuery {
             this.queryResponse = queryResponse;
             return this;
         }
-        public Builder setErrorType(@CheckForNull ExceptionType errorType) {
+        public Builder setErrorType(@CheckForNull DqlExceptionType errorType) {
             this.errorType = errorType;
             return this;
         }

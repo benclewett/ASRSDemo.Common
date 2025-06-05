@@ -27,28 +27,28 @@ public class Tokeniser {
 
             if (i == 0) {
                 if (!Token.TokenType.KEYWORD.equals(token.tokenType)) {
-                    throw new QueryParserException(
-                            ExceptionType.UNKNOWN_KEYWORD,
+                    throw new DqlException(
+                            DqlExceptionType.UNKNOWN_KEYWORD,
                             "Query should start with a keyword, not: " + token.word);
                 }
                 keyWord = KeyWord.mapFromString(token.word).get();
                 if (!keyWord.primaryKeyword) {
-                    throw new QueryParserException(
-                            ExceptionType.UNEXPECTED_SYNTAX,
+                    throw new DqlException(
+                            DqlExceptionType.UNEXPECTED_SYNTAX,
                             "Query starts with a unexpected keyword: '" + token.word + "'");
                 }
             } else {
                 if (!prevToken.getLegalFollowingTokens().contains(token.tokenType)) {
-                    throw new QueryParserException(
-                            ExceptionType.UNEXPECTED_SYNTAX,
-                            "Token '" + token.word + "' should not follow '" + prevToken.tokenType + "'");
+                    throw new DqlException(
+                            DqlExceptionType.UNEXPECTED_SYNTAX,
+                            "Phrase '" + token.word + "' should not follow '" + prevToken.tokenType + "'");
                 }
                 if (Token.TokenType.KEYWORD.equals(token.tokenType)) {
                     var keyword = KeyWord.mapFromString(token.word).orElseThrow();
                     if (!keyWord.secondaries.contains(keyword)) {
-                        throw new QueryParserException(
-                                ExceptionType.UNEXPECTED_SYNTAX,
-                                "KeyWord '" + keyword + "' should not follow " + keyWord + "'");
+                        throw new DqlException(
+                                DqlExceptionType.UNEXPECTED_SYNTAX,
+                                "Phrase '" + keyword + "' should not follow " + keyWord + "'");
                     }
                     keyWord = keyword;
                 }

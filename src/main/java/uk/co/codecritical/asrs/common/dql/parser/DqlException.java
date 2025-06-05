@@ -2,18 +2,18 @@ package uk.co.codecritical.asrs.common.dql.parser;
 
 import com.google.common.base.MoreObjects;
 
-public class QueryParserException extends RuntimeException {
-    private final ExceptionType exceptionType;
+public class DqlException extends RuntimeException {
+    public final DqlExceptionType dqlExceptionType;
 
-    public QueryParserException(ExceptionType exceptionType, String message) {
+    public DqlException(DqlExceptionType dqlExceptionType, String message) {
         super(message);
-        this.exceptionType = exceptionType;
+        this.dqlExceptionType = dqlExceptionType;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("exceptionType", exceptionType)
+                .add("dqlExceptionType", dqlExceptionType)
                 .add("message", getMessage())
                 .toString();
     }

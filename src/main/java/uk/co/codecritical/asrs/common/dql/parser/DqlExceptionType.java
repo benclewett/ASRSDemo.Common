@@ -1,6 +1,6 @@
 package uk.co.codecritical.asrs.common.dql.parser;
 
-public enum ExceptionType {
+public enum DqlExceptionType {
     UNKNOWN_KEYWORD,
     UNEXPECTED_SYNTAX,
     UNSUPPORTED,

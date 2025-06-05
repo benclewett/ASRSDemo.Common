@@ -13,23 +13,26 @@ public class TokensToPredicates {
 
     private Optional<Predicate<ToteDql>> totePredicate = Optional.empty();
     private Optional<Predicate<StationDql>> stationPredicate = Optional.empty();
+    private final ImmutableList<Assignment> assignments;
 
     public TokensToPredicates(ImmutableList<Token> tokens) {
         this.tokens = tokens;
 
-        ImmutableSet<Axiom> axioms = getAxioms();
-        axioms.forEach(this::getPredicate);
+        ImmutableSet<Axiom> axioms = findAxioms();
+        axioms.forEach(this::addPredicate);
+
+        assignments = findAssignments();
     }
 
-    private void getPredicate(Axiom axiom) {
+    private void addPredicate(Axiom axiom) {
         switch (axiom.entityWord) {
             case TOTE -> addPredicateToteId(axiom.value, axiom.comparison, axiom.preLogic);
             case PROPERTY -> addPredicateToteProperty(axiom.value, axiom.comparison, axiom.preLogic);
             case STATION -> addPredicateStationId(axiom.value, axiom.comparison, axiom.preLogic);
             case CAPABILITY -> addPredicateStationCapability(axiom.value, axiom.comparison, axiom.preLogic);
             default ->
-                throw new QueryParserException(
-                        ExceptionType.UNSUPPORTED,
+                throw new DqlException(
+                        DqlExceptionType.UNSUPPORTED,
                         "Entity '%s' is currently unsupported.".formatted(axiom.entityWord.name()));
         }
     }
@@ -48,8 +51,8 @@ public class TokensToPredicates {
                     .or(() -> Optional.of(p));
             case OR -> stationPredicate.map(predicate -> predicate.or(p))
                     .or(() -> Optional.of(p));
-            case NOT -> throw new QueryParserException(
-                    ExceptionType.UNSUPPORTED,
+            case NOT -> throw new DqlException(
+                    DqlExceptionType.UNSUPPORTED,
                     "Logic 'NOT' is currently unsupported.");
         };
     }
@@ -66,13 +69,13 @@ public class TokensToPredicates {
                         .or(() -> Optional.of(p));
                 case OR -> stationPredicate.map(predicate -> predicate.or(p))
                         .or(() -> Optional.of(p));
-                case NOT -> throw new QueryParserException(
-                        ExceptionType.UNSUPPORTED,
+                case NOT -> throw new DqlException(
+                        DqlExceptionType.UNSUPPORTED,
                         "Logic 'NOT' is currently unsupported.");
             };
         } catch (NumberFormatException ignore) {
-            throw new QueryParserException(
-                    ExceptionType.BAD_INTEGER,
+            throw new DqlException(
+                    DqlExceptionType.BAD_INTEGER,
                     "Value '%s' is not an integer.".formatted(value));
         }
     }
@@ -91,8 +94,8 @@ public class TokensToPredicates {
                     .or(() -> Optional.of(p));
             case OR -> totePredicate.map(predicate -> predicate.or(p))
                     .or(() -> Optional.of(p));
-            case NOT -> throw new QueryParserException(
-                    ExceptionType.UNSUPPORTED,
+            case NOT -> throw new DqlException(
+                    DqlExceptionType.UNSUPPORTED,
                     "Logic 'NOT' is currently unsupported.");
         };
     }
@@ -109,18 +112,22 @@ public class TokensToPredicates {
                         .or(() -> Optional.of(p));
                 case OR -> totePredicate.map(predicate -> predicate.or(p))
                         .or(() -> Optional.of(p));
-                case NOT -> throw new QueryParserException(
-                        ExceptionType.UNSUPPORTED,
+                case NOT -> throw new DqlException(
+                        DqlExceptionType.UNSUPPORTED,
                         "Logic 'NOT' is currently unsupported.");
             };
         } catch (NumberFormatException ignore) {
-            throw new QueryParserException(
-                    ExceptionType.BAD_INTEGER,
+            throw new DqlException(
+                    DqlExceptionType.BAD_INTEGER,
                     "Value '%s' is not an integer.".formatted(value));
         }
     }
 
-    private ImmutableSet<Axiom> getAxioms() {
+    //region Axioms
+
+    private record Axiom (Optional<LogicalWord> preLogic, EntityWord entityWord, ComparisonWord comparison, String value) {}
+
+    private ImmutableSet<Axiom> findAxioms() {
         ImmutableSet.Builder<Axiom> builder = ImmutableSet.builder();
         for (int i = 1; i < tokens.size() - 2; i++) {
             if (Token.TokenType.ENTITY.equals(tokens.get(i).tokenType)
@@ -143,9 +150,27 @@ public class TokensToPredicates {
         return KeyWord.mapFromString(tokens.get(0).word).orElseThrow();
     }
 
-    private record Axiom (Optional<LogicalWord> preLogic, EntityWord entityWord, ComparisonWord comparison, String value) {}
+    //endregion
 
-    //region Predicates
+    //region Assignments
+
+    private ImmutableList<Assignment> findAssignments() {
+        ImmutableList.Builder<Assignment> builder = ImmutableList.builder();
+        for (int i = 1; i < tokens.size() - 2; i++) {
+            if (Token.TokenType.METRIC_NAME.equals(tokens.get(i).tokenType)
+                    && Token.TokenType.ASSIGN.equals(tokens.get(i + 1).tokenType)
+                    && Token.TokenType.METRIC_VALUE.equals(tokens.get(i + 2).tokenType)) {
+                builder.add(new Assignment(
+                        tokens.get(i).word,
+                        tokens.get(i + 2).word));
+            }
+        }
+        return builder.build();
+    }
+
+    //endregion
+
+    //region Output
 
     static final Predicate<ToteDql> ALL_TOES = toteDql -> true;
     static final Predicate<StationDql> ALL_STATIONS = toteDql -> true;
@@ -156,6 +181,10 @@ public class TokensToPredicates {
 
     public Predicate<StationDql> getStationPredicate() {
         return stationPredicate.orElse(ALL_STATIONS);
+    }
+
+    public ImmutableList<Assignment> getAssignment() {
+        return assignments;
     }
 
     //endregion

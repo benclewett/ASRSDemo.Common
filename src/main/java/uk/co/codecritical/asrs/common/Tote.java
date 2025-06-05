@@ -2,6 +2,7 @@ package uk.co.codecritical.asrs.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import uk.co.codecritical.asrs.common.dql.entity.ToteDql;
 
@@ -85,6 +86,10 @@ public class Tote implements ToteDql {
     @Override
     public void setProperties(ImmutableSet<String> properties) {
         this.properties = TokenSet.builder().addTokens(properties).build();
+    }
+
+    public void clearProperties() {
+        this.properties = TokenSet.EMPTY;
     }
 
     //region Builder

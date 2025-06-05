@@ -1,9 +1,10 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import com.google.common.collect.ImmutableList;
+import uk.co.codecritical.asrs.common.dql.entity.DqlGrid;
 import uk.co.codecritical.asrs.common.dql.entity.StationDql;
 import uk.co.codecritical.asrs.common.dql.entity.ToteDql;
-import uk.co.codecritical.asrs.common.dql.entity.DqlGrid;
+import uk.co.codecritical.asrs.common.dql.parser.Assignment;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -24,14 +25,19 @@ public class TestGrid implements DqlGrid {
 
     public Optional<ToteDql> selectedTote = Optional.empty();
     public Optional<StationDql> selectedStation = Optional.empty();
+    public ImmutableList<Assignment> assignments;
 
     @Override
-    public void binToStation(Predicate<ToteDql> toteDqlPredicate, Predicate<StationDql> stationDqlPredicate) {
-        selectedTote = TOTES.stream()
+    public void toteRetrievalDql(
+            Predicate<ToteDql> toteDqlPredicate,
+            Predicate<StationDql> stationDqlPredicate,
+            ImmutableList<Assignment> assignments) {
+        this.selectedTote = TOTES.stream()
                 .filter(toteDqlPredicate)
                 .findFirst();
-        selectedStation = STATIONS.stream()
+        this.selectedStation = STATIONS.stream()
                 .filter(stationDqlPredicate)
                 .findFirst();
+        this.assignments = assignments;
     }
 }
