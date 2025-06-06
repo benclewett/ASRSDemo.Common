@@ -14,10 +14,16 @@ public class TokenSet {
         return new TokenSet(properties);
     }
 
+    public static TokenSet of(String... property) {
+        return new TokenSet(ImmutableSet.copyOf(property));
+    }
+
     private final ImmutableSet<String> tokens;
 
     private TokenSet(ImmutableSet<String> tokens) {
-        this.tokens = tokens;
+        ImmutableSet.Builder<String> builder = ImmutableSet.builder();
+        tokens.forEach(t -> builder.add(t.toUpperCase()));
+        this.tokens = builder.build();
     }
 
     public int size() {

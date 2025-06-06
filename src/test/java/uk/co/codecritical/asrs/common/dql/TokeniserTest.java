@@ -255,7 +255,7 @@ class TokeniserTest {
     @Test
     void testTokenTypeWithSet() {
         var words = Tokeniser.queryToStrings(
-                "retrieve tote=42 or tote!=32 to station=picking set station=picking, property=\"empty\"");
+                "retrieve tote=42 or tote!=32 to station=picking set add_property=picking, property=\"empty\"");
 
         var tokens = Tokeniser.stringsToTokens(words);
 

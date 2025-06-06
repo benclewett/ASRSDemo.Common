@@ -1,9 +1,8 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import com.google.common.collect.ImmutableList;
-import uk.co.codecritical.asrs.common.dql.executor.DqlExecutor;
 import uk.co.codecritical.asrs.common.dql.executor.DqlQuery;
-import uk.co.codecritical.asrs.common.dql.interfaces.ScriptFactoryDql;
+import uk.co.codecritical.asrs.common.dql.interfaces.DqlExecutorListener;
 import uk.co.codecritical.asrs.common.dql.interfaces.StationDql;
 import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 import uk.co.codecritical.asrs.common.dql.parser.Assignment;
@@ -11,7 +10,7 @@ import uk.co.codecritical.asrs.common.dql.parser.Assignment;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class TestScriptFactory implements ScriptFactoryDql {
+public class TestExecutorListener implements DqlExecutorListener {
     private static final ImmutableList<ToteDql> TOTES = ImmutableList.of(
         new TestTote(1, "EMPTY"),
         new TestTote(2, "EMPTY"),

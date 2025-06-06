@@ -148,10 +148,6 @@ public class Tote implements ToteDql {
             this.properties = TokenSet.EMPTY;
             return this;
         }
-        public Builder setProperty(String property) {
-            this.properties = this.properties.mutate().addToken(TokenSet.filter(property)).build();
-            return this;
-        }
         public Builder setProperties(ImmutableSet<String> properties) {
             this.properties = TokenSet.of(properties);
             return this;
@@ -160,7 +156,11 @@ public class Tote implements ToteDql {
             this.properties = properties;
             return this;
         }
-        public Builder removeProperty(String property) {
+        public Builder addProperty(String property) {
+            this.properties = this.properties.mutate().addToken(TokenSet.filter(property)).build();
+            return this;
+        }
+        public Builder delProperty(String property) {
             this.properties = this.properties.mutate().removeToken(TokenSet.filter(property)).build();
             return this;
         }

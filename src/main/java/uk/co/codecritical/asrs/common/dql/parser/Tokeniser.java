@@ -85,8 +85,8 @@ public class Tokeniser {
             }
 
             if (querySetSection) {
-                var entityWord = EntityWord.mapFromString(word);
-                if (entityWord.isPresent()) {
+                var metricNameWord = MetricNameWord.mapFromString(word);
+                if (metricNameWord.isPresent()) {
                     token = new Token(word, Token.TokenType.METRIC_NAME);
                 } else if (EQUALS.equals(word)) {
                     token = new Token(word, Token.TokenType.ASSIGN);

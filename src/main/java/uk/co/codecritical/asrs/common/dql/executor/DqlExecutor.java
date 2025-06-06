@@ -1,16 +1,16 @@
 package uk.co.codecritical.asrs.common.dql.executor;
 
-import uk.co.codecritical.asrs.common.dql.interfaces.ScriptFactoryDql;
+import uk.co.codecritical.asrs.common.dql.interfaces.DqlExecutorListener;
 import uk.co.codecritical.asrs.common.dql.parser.DqlExceptionType;
 import uk.co.codecritical.asrs.common.dql.parser.DqlException;
 import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
 import uk.co.codecritical.asrs.common.dql.parser.TokensToPredicates;
 
 public class DqlExecutor {
-    private final ScriptFactoryDql scriptFactoryDql;
+    private final DqlExecutorListener dqlExecutorListener;
 
-    public DqlExecutor(ScriptFactoryDql grid) {
-        this.scriptFactoryDql = grid;
+    public DqlExecutor(DqlExecutorListener dqlExecutorListener) {
+        this.dqlExecutorListener = dqlExecutorListener;
     }
 
     public DqlQuery execute(String query) {
@@ -27,14 +27,14 @@ public class DqlExecutor {
 
             switch (tokensToPredicates.getKeyWord()) {
                 case RETRIEVE -> {
-                    dqlQuery = scriptFactoryDql .toteRetrievalDql(
+                    dqlQuery = dqlExecutorListener.toteRetrievalDql(
                             dqlQuery,
                             tokensToPredicates.getTotePredicate(),
                             tokensToPredicates.getStationPredicate(),
                             tokensToPredicates.getAssignment());
                 }
                 case STORE -> {
-                    dqlQuery = scriptFactoryDql.toteStorageDql(
+                    dqlQuery = dqlExecutorListener.toteStorageDql(
                             dqlQuery,
                             tokensToPredicates.getTotePredicate(),
                             tokensToPredicates.getAssignment());

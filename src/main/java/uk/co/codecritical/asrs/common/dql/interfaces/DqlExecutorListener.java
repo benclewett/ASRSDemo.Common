@@ -6,7 +6,7 @@ import uk.co.codecritical.asrs.common.dql.parser.Assignment;
 
 import java.util.function.Predicate;
 
-public interface ScriptFactoryDql {
+public interface DqlExecutorListener {
     DqlQuery toteRetrievalDql(
             DqlQuery query,
             Predicate<ToteDql> toteDqlPredicate,

@@ -37,7 +37,7 @@ public class TokenPropertyTest {
 
     @Test
     void testSingleProperty() {
-        Tote t = Tote.builder(TOTE_ID).setProperty(P1).build();
+        Tote t = Tote.builder(TOTE_ID).setProperties(TokenSet.of(P1)).build();
 
         assertFalse(t.properties.isEmpty());
         assertTrue(t.properties.isPresent(P1));
@@ -55,8 +55,7 @@ public class TokenPropertyTest {
     @Test
     void testDoubleProperty() {
         Tote t = Tote.builder(TOTE_ID)
-                .setProperty(P1)
-                .setProperty(P2)
+                .setProperties(TokenSet.of(P1, P2))
                 .build();
 
         assertFalse(t.properties.isEmpty());
@@ -77,10 +76,7 @@ public class TokenPropertyTest {
     @Test
     void testPropertiesShuffled() {
         Tote t = Tote.builder(TOTE_ID)
-                .setProperty(P1)
-                .setProperty(P2)
-                .setProperty(P3)
-                .setProperty(P4)
+                .setProperties(TokenSet.of(P1, P2, P3, P4))
                 .build();
 
         assertFalse(t.properties.isEmpty());
@@ -91,10 +87,7 @@ public class TokenPropertyTest {
 
         Tote clone = t.mutate()
                 .clearProperties()
-                .setProperty(P4)
-                .setProperty(P3)
-                .setProperty(P2)
-                .setProperty(P1)
+                .setProperties(TokenSet.of(P4, P3, P2, P1))
                 .build();
 
         assertEquals(t, clone);
@@ -108,10 +101,7 @@ public class TokenPropertyTest {
     @Test
     void testPropertiesShuffled2() {
         Tote t = Tote.builder(TOTE_ID)
-                .setProperty(P1)
-                .setProperty(P2)
-                .setProperty(P3)
-                .setProperty(P4)
+                .setProperties(TokenSet.of(P1, P2, P3, P4))
                 .build();
 
         assertFalse(t.properties.isEmpty());
@@ -139,7 +129,7 @@ public class TokenPropertyTest {
 
     @Test
     void testSetGridPos() {
-        Tote t = Tote.builder(TOTE_ID).setProperty(P1).build();
+        Tote t = Tote.builder(TOTE_ID).setProperties(TokenSet.of(P1)).build();
 
         assertFalse(t.properties.isEmpty());
         assertTrue(t.properties.isPresent(P1));

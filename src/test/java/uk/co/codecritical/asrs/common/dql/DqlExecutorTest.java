@@ -11,12 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DqlExecutorTest {
-    TestScriptFactory grid;
+    TestExecutorListener grid;
     DqlExecutor executor;
 
     @BeforeEach
     void beforeEach() {
-        grid = new TestScriptFactory();
+        grid = new TestExecutorListener();
         executor = new DqlExecutor(grid);
     }
 
@@ -82,10 +82,10 @@ public class DqlExecutorTest {
 
     @Test
     void testAssignments() {
-        final Assignment ab = new Assignment("tote", "a");
-        final Assignment cd = new Assignment("tote", "b");
-        final Assignment ef = new Assignment("tote", "c");
-        var query = executor.execute("RETRIEVE property=empty TO capability=picking SET tote=a, tote=b, tote=c");
+        final Assignment ab = new Assignment("test", "a");
+        final Assignment cd = new Assignment("test", "b");
+        final Assignment ef = new Assignment("test", "c");
+        var query = executor.execute("RETRIEVE property=empty TO capability=picking SET test=a, test=b, test=c");
         assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
         assertTrue(grid.selectedTote.isPresent());
         assertTrue(grid.selectedStation.isPresent());
