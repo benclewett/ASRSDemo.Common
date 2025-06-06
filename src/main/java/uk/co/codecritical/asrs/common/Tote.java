@@ -160,6 +160,10 @@ public class Tote implements ToteDql {
             this.properties = properties;
             return this;
         }
+        public Builder removeProperty(String property) {
+            this.properties = this.properties.mutate().removeToken(TokenSet.filter(property)).build();
+            return this;
+        }
         public Tote build() {
             assert (sku.isEmpty() && amount == 0 || sku.isPresent() && amount != 0);
             return new Tote(id, sku, amount, gridPos, properties);

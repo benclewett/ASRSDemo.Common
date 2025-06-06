@@ -72,11 +72,21 @@ public class TokenSet {
     }
 
     public static class Builder {
-        private final ImmutableSet.Builder<String> builder = ImmutableSet.builder();
+        private ImmutableSet.Builder<String> builder = ImmutableSet.builder();
         public Builder() {
         }
         public Builder addToken(String token) {
             builder.add(TokenSet.filter(token));
+            return this;
+        }
+        public Builder removeToken(String token) {
+            var tokens = builder.build();
+            builder = ImmutableSet.builder();
+            for (var t : tokens) {
+                if (!t.equals(token)) {
+                    builder.add(t);
+                }
+            }
             return this;
         }
         public Builder addTokens(ImmutableCollection<String> tokens) {
