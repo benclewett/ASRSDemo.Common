@@ -2,8 +2,8 @@ package uk.co.codecritical.asrs.common.dql.parser;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import uk.co.codecritical.asrs.common.dql.entity.StationDql;
-import uk.co.codecritical.asrs.common.dql.entity.ToteDql;
+import uk.co.codecritical.asrs.common.dql.interfaces.StationDql;
+import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -19,12 +19,12 @@ public class TokensToPredicates {
         this.tokens = tokens;
 
         ImmutableSet<Axiom> axioms = findAxioms();
-        axioms.forEach(this::addPredicate);
+        axioms.forEach(this::buildPredicate);
 
         assignments = findAssignments();
     }
 
-    private void addPredicate(Axiom axiom) {
+    private void buildPredicate(Axiom axiom) {
         switch (axiom.entityWord) {
             case TOTE -> addPredicateToteId(axiom.value, axiom.comparison, axiom.preLogic);
             case PROPERTY -> addPredicateToteProperty(axiom.value, axiom.comparison, axiom.preLogic);

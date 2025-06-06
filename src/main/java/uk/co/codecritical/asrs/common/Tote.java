@@ -2,9 +2,8 @@ package uk.co.codecritical.asrs.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import uk.co.codecritical.asrs.common.dql.entity.ToteDql;
+import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -17,7 +16,7 @@ public class Tote implements ToteDql {
     public final int amount;
     @JsonIgnore
     public final Optional<Pos> gridPos;
-    private TokenSet properties;
+    public final TokenSet properties;
 
     private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties) {
         this.id = id;
@@ -39,28 +38,9 @@ public class Tote implements ToteDql {
     }
 
     public String niceProduct() {
-        if (sku.isPresent()) {
-            return String.format("%d,%s,%d",
-                    id,
-                    sku.get().name,
-                    amount);
-        } else {
-            return String.format("%d,(empty)",
-                    id);
-        }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tote tote = (Tote) o;
-        return amount == tote.amount && this.sku.equals(tote.sku);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(amount, sku);
+        return sku
+                .map(value -> String.format("%d,%s,%d", id, value.name, amount))
+                .orElseGet(() -> String.format("%d,(empty)", id));
     }
 
     @Override
@@ -84,12 +64,20 @@ public class Tote implements ToteDql {
     }
 
     @Override
-    public void setProperties(ImmutableSet<String> properties) {
-        this.properties = TokenSet.builder().addTokens(properties).build();
+    public ToteDql setProperties(ImmutableSet<String> properties) {
+        return this.mutate().setProperties(properties).build();
     }
 
-    public void clearProperties() {
-        this.properties = TokenSet.EMPTY;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Tote tote = (Tote) o;
+        return id == tote.id && amount == tote.amount && Objects.equals(sku, tote.sku) && Objects.equals(gridPos, tote.gridPos) && Objects.equals(properties, tote.properties);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, sku, amount, gridPos, properties);
     }
 
     //region Builder
@@ -164,12 +152,15 @@ public class Tote implements ToteDql {
             this.properties = this.properties.mutate().addToken(TokenSet.filter(property)).build();
             return this;
         }
+        public Builder setProperties(ImmutableSet<String> properties) {
+            this.properties = TokenSet.of(properties);
+            return this;
+        }
         public Builder setProperties(TokenSet properties) {
             this.properties = properties;
             return this;
         }
         public Tote build() {
-            assert (sku != null);
             assert (sku.isEmpty() && amount == 0 || sku.isPresent() && amount != 0);
             return new Tote(id, sku, amount, gridPos, properties);
         }

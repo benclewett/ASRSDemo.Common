@@ -1,7 +1,7 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import com.google.common.collect.ImmutableSet;
-import uk.co.codecritical.asrs.common.dql.entity.ToteDql;
+import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 
 public class TestTote implements ToteDql {
     final int id;
@@ -33,7 +33,8 @@ public class TestTote implements ToteDql {
     }
 
     @Override
-    public void setProperties(ImmutableSet<String> properties) {
+    public ToteDql setProperties(ImmutableSet<String> properties) {
         this.properties = properties;
+        return this;
     }
 }

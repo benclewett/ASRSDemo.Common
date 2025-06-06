@@ -1,16 +1,16 @@
 package uk.co.codecritical.asrs.common.dql.executor;
 
-import uk.co.codecritical.asrs.common.dql.entity.DqlGrid;
+import uk.co.codecritical.asrs.common.dql.interfaces.ScriptFactoryDql;
 import uk.co.codecritical.asrs.common.dql.parser.DqlExceptionType;
 import uk.co.codecritical.asrs.common.dql.parser.DqlException;
 import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
 import uk.co.codecritical.asrs.common.dql.parser.TokensToPredicates;
 
 public class DqlExecutor {
-    private final DqlGrid dqlGrid;
+    private final ScriptFactoryDql scriptFactoryDql;
 
-    public DqlExecutor(DqlGrid grid) {
-        this.dqlGrid = grid;
+    public DqlExecutor(ScriptFactoryDql grid) {
+        this.scriptFactoryDql = grid;
     }
 
     public DqlQuery execute(String query) {
@@ -27,9 +27,16 @@ public class DqlExecutor {
 
             switch (tokensToPredicates.getKeyWord()) {
                 case RETRIEVE -> {
-                    dqlGrid.toteRetrievalDql(
+                    dqlQuery = scriptFactoryDql .toteRetrievalDql(
+                            dqlQuery,
                             tokensToPredicates.getTotePredicate(),
                             tokensToPredicates.getStationPredicate(),
+                            tokensToPredicates.getAssignment());
+                }
+                case STORE -> {
+                    dqlQuery = scriptFactoryDql.toteStorageDql(
+                            dqlQuery,
+                            tokensToPredicates.getTotePredicate(),
                             tokensToPredicates.getAssignment());
                 }
                 default -> throw new DqlException(

@@ -1,7 +1,7 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import com.google.common.base.MoreObjects;
-import uk.co.codecritical.asrs.common.dql.entity.StationDql;
+import uk.co.codecritical.asrs.common.dql.interfaces.StationDql;
 
 import java.util.Optional;
 

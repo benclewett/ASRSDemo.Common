@@ -4,21 +4,30 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.Objects;
+
 /** Tokens for tote meta */
 public class TokenSet {
     public static final TokenSet EMPTY = new TokenSet(ImmutableSet.of());
+
+    public static TokenSet of(ImmutableSet<String> properties) {
+        return new TokenSet(properties);
+    }
 
     private final ImmutableSet<String> tokens;
 
     private TokenSet(ImmutableSet<String> tokens) {
         this.tokens = tokens;
     }
+
     public int size() {
         return tokens.size();
     }
+
     public boolean isEmpty() {
         return tokens.isEmpty();
     }
+
     public boolean isPresent(String token) {
         token = filter(token);
         return tokens.contains(token);
@@ -37,6 +46,18 @@ public class TokenSet {
 
     public static String filter(String token) {
         return token.toUpperCase().strip();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        TokenSet tokenSet = (TokenSet) o;
+        return Objects.equals(tokens, tokenSet.tokens);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(tokens);
     }
 
     //region Builder

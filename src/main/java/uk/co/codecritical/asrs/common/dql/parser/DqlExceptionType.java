@@ -5,5 +5,6 @@ public enum DqlExceptionType {
     UNEXPECTED_SYNTAX,
     UNSUPPORTED,
     BAD_INTEGER,
-    NO_RESULT
+    NO_RESULT,
+    BAD_RESULT
 }

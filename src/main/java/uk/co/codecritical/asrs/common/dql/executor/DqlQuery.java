@@ -5,6 +5,7 @@ import uk.co.codecritical.asrs.common.dql.parser.DqlExceptionType;
 
 import javax.annotation.CheckForNull;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.UUID;
 
 public class DqlQuery {
@@ -13,18 +14,21 @@ public class DqlQuery {
     public final QueryResponse queryResponse;
     public final @CheckForNull DqlExceptionType errorType;
     public final String errorMessage;
+    public final OptionalInt scriptId;
 
     private DqlQuery(
             String query,
             String queryId,
             QueryResponse queryResponse,
             @CheckForNull DqlExceptionType errorType,
-            String errorMessage) {
+            String errorMessage,
+            OptionalInt scripId) {
         this.query = query;
         this.queryId = queryId;
         this.queryResponse = queryResponse;
         this.errorType = errorType;
         this.errorMessage = errorMessage;
+        this.scriptId = scripId;
     }
 
     public static DqlQuery create() {
@@ -33,7 +37,8 @@ public class DqlQuery {
                 UUID.randomUUID().toString().substring(0, 5),
                 QueryResponse.NEW,
                 null,
-                "");
+                "",
+                OptionalInt.empty());
     }
 
     @Override
@@ -44,6 +49,7 @@ public class DqlQuery {
                 .add("queryResponse", queryResponse)
                 .add("errorType", errorType)
                 .add("errorMessage", errorMessage)
+                .add("scriptId", scriptId)
                 .toString();
     }
 
@@ -68,7 +74,9 @@ public class DqlQuery {
                 .setQuery(query)
                 .setQueryId(queryId)
                 .setQueryResponse(queryResponse)
-                .setErrorMessage(errorMessage);
+                .setErrorMessage(errorMessage)
+                .setErrorType(errorType)
+                .setScriptId(scriptId);
     }
 
     public static Builder builder() {
@@ -84,6 +92,7 @@ public class DqlQuery {
         @CheckForNull
         DqlExceptionType errorType;
         String errorMessage = null;
+        OptionalInt scriptId = OptionalInt.empty();
         public Builder() {
         }
         public Builder setQuery(String query) {
@@ -106,6 +115,14 @@ public class DqlQuery {
             this.errorMessage = errorMessage;
             return this;
         }
+        public Builder setScriptId(OptionalInt scriptId) {
+            this.scriptId = scriptId;
+            return this;
+        }
+        public Builder setScriptId(int scriptId) {
+            this.scriptId = OptionalInt.of(scriptId);
+            return this;
+        }
         public DqlQuery build() {
             assert (query != null);
             assert(queryId != null);
@@ -116,7 +133,8 @@ public class DqlQuery {
                     queryId,
                     queryResponse,
                     errorType,
-                    errorMessage);
+                    errorMessage,
+                    scriptId);
         }
     }
 

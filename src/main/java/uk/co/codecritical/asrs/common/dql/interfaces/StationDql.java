@@ -1,4 +1,4 @@
-package uk.co.codecritical.asrs.common.dql.entity;
+package uk.co.codecritical.asrs.common.dql.interfaces;
 
 import java.util.Optional;
 

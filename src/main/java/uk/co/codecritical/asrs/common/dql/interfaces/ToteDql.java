@@ -1,4 +1,4 @@
-package uk.co.codecritical.asrs.common.dql.entity;
+package uk.co.codecritical.asrs.common.dql.interfaces;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -9,5 +9,5 @@ public interface ToteDql {
     ImmutableSet<String> getProperties();
     int getAmount();
 
-    void setProperties(ImmutableSet<String> properties);
+    ToteDql setProperties(ImmutableSet<String> properties);
 }
