@@ -22,7 +22,8 @@ public enum KeyWord {
     RETRIEVE(true, TO),
     STORE(true, WITH),
     UPDATE(true, SET),
-    PICK(true, INTO);
+    PICK(true, INTO),
+    RELEASE(true, SET);
 
     KeyWord(boolean primaryKeyword, KeyWord... secondaries) {
         this.primaryKeyword = primaryKeyword;

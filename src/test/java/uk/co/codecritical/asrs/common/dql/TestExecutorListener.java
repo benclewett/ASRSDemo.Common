@@ -56,4 +56,17 @@ public class TestExecutorListener implements DqlExecutorListener {
         this.selectedStation = Optional.empty();
         return query;
     }
+
+    @Override
+    public DqlQuery toteReleaseDql(
+            DqlQuery query,
+            Predicate<ToteDql> toteDqlPredicate,
+            ImmutableList<Assignment> assignments) {
+        this.selectedTote = TOTES.stream()
+                .filter(toteDqlPredicate)
+                .findFirst();
+        this.assignments = assignments;
+        this.selectedStation = Optional.empty();
+        return query;
+    }
 }

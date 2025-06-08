@@ -39,6 +39,12 @@ public class DqlExecutor {
                             tokensToPredicates.getTotePredicate(),
                             tokensToPredicates.getAssignment());
                 }
+                case RELEASE -> {
+                    dqlQuery = dqlExecutorListener.toteReleaseDql(
+                            dqlQuery,
+                            tokensToPredicates.getTotePredicate(),
+                            tokensToPredicates.getAssignment());
+                }
                 default -> throw new DqlException(
                         DqlExceptionType.UNSUPPORTED,
                         "Unsupported keyword: " + tokensToPredicates.getKeyWord());

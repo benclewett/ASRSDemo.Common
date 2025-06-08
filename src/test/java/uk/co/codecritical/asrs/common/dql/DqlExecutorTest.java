@@ -122,4 +122,27 @@ public class DqlExecutorTest {
 
     //endregion
 
+    //region RELEASE
+
+    @Test
+    void testRelieve() {
+        var query = executor.execute("RELEASE tote=1");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertTrue(grid.selectedTote.isPresent());
+        assertEquals(1, grid.selectedTote.get().getId());
+        assertEquals(grid.assignments.size(), 0);
+    }
+
+    @Test
+    void testReleaseAssignment() {
+        var query = executor.execute("STORE tote=1 set property=foo");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertTrue(grid.selectedTote.isPresent());
+        assertEquals(1, grid.selectedTote.get().getId());
+        assertEquals(grid.assignments.size(), 1);
+        assertEquals("foo", grid.assignments.get(0).value());
+    }
+
+    //endregion
+
 }
