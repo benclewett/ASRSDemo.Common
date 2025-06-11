@@ -8,6 +8,8 @@ public enum MetricNameWord {
     PROPERTY,
     ADD_PROPERTY,
     DEL_PROPERTY,
+    SKU,
+    AMOUNT,
     TEST;   // Does nothing
 
     private static final ImmutableSet<String> SET = createMap();

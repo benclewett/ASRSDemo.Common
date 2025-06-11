@@ -11,7 +11,8 @@ public enum EntityWord {
     STATION,
     PROPERTY,
     CAPABILITY,
-    TAG;
+    TOTE_FROM,
+    TOTE_TO;
 
     public static final ImmutableSet<String> ALL_AS_STRING = Arrays.stream(EntityWord.values())
             .map(Enum::toString)

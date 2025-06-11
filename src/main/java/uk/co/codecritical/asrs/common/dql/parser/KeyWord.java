@@ -1,8 +1,10 @@
 package uk.co.codecritical.asrs.common.dql.parser;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 /** <p>KeyWord in a statement.  Expected a primary, with one or more secondaries.</p>
@@ -10,27 +12,25 @@ import java.util.Optional;
  * <pre>RETRIEVE bin=123 TO station=456</pre>
  */
 public enum KeyWord {
+    // Primary:
+    RETRIEVE(true),
+    STORE(true),
+    UPDATE(true),
+    PICK(true),
+    RELEASE(true),
+
     // Secondary:
     SET(false),
-    INTO(false, SET),
-    TO(false, SET),
-    FROM(false, SET),
-    WITH(false, SET),
+    INTO(false),
+    OUT_OF(false),
+    TO(false),
 
-    // Primary:
-    SELECT(true, FROM),
-    RETRIEVE(true, TO),
-    STORE(true, WITH),
-    UPDATE(true, SET),
-    PICK(true, INTO),
-    RELEASE(true, SET);
+    NONE(false);
 
-    KeyWord(boolean primaryKeyword, KeyWord... secondaries) {
+    KeyWord(boolean primaryKeyword) {
         this.primaryKeyword = primaryKeyword;
-        this.secondaries = ImmutableSet.copyOf(secondaries);
     }
     public final boolean primaryKeyword;
-    public final ImmutableSet<KeyWord> secondaries;
 
     public static final ImmutableSet<String> ALL_AS_STRING = Arrays.stream(KeyWord.values())
             .map(Enum::toString)
@@ -43,4 +43,27 @@ public enum KeyWord {
                 .findFirst()
                 .map(KeyWord::valueOf);
     }
+
+    private static final ImmutableMap<KeyWord, ImmutableSet<KeyWord>> keyWordSequence = ImmutableMap.of(
+            RETRIEVE, ImmutableSet.of(TO),
+            STORE, ImmutableSet.of(SET),
+            UPDATE, ImmutableSet.of(SET),
+            PICK, ImmutableSet.of(INTO, OUT_OF, SET),
+            RELEASE, ImmutableSet.of(SET),
+            SET, ImmutableSet.of(),
+            INTO, ImmutableSet.of(SET, OUT_OF),
+            OUT_OF, ImmutableSet.of(SET, INTO),
+            TO, ImmutableSet.of(SET)
+    );
+
+    public static boolean checkValidSequence(KeyWord k1, KeyWord k2) {
+        return keyWordSequence.containsKey(k1)
+                && Objects.requireNonNull(keyWordSequence.get(k1)).contains(k2);
+    }
+
+    public boolean checkValidSequence(KeyWord keyWordAfter) {
+        return keyWordSequence.containsKey(this)
+                && Objects.requireNonNull(keyWordSequence.get(this)).contains(keyWordAfter);
+    }
+
 }

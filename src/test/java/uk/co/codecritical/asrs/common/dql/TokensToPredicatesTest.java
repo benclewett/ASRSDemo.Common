@@ -1,6 +1,7 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import org.junit.jupiter.api.Test;
+import uk.co.codecritical.asrs.common.dql.parser.KeyWord;
 import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
 import uk.co.codecritical.asrs.common.dql.parser.TokensToPredicates;
 
@@ -26,9 +27,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate();
+        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
 
         assertTrue(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
@@ -43,9 +44,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate();
+        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
 
         assertFalse(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -60,9 +61,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate();
+        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
 
         assertTrue(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -76,9 +77,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate();
+        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
 
         assertFalse(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -93,9 +94,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate();
+        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
 
         assertTrue(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -111,9 +112,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate();
+        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
 
         assertTrue(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -129,9 +130,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate();
+        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
 
         assertFalse(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
@@ -147,9 +148,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate();
+        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
 
         assertFalse(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
@@ -165,9 +166,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getStationPredicate();
+        var p = t.getStationPredicate(KeyWord.TO).orElseThrow();
 
         assertTrue(p.test(STATION_1));
         assertFalse(p.test(STATION_2));
@@ -183,9 +184,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getStationPredicate();
+        var p = t.getStationPredicate(KeyWord.TO).orElseThrow();
 
         assertTrue(p.test(STATION_1));
         assertTrue(p.test(STATION_2));
@@ -201,9 +202,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getStationPredicate();
+        var p = t.getStationPredicate(KeyWord.TO).orElseThrow();
 
         assertTrue(p.test(STATION_1));
         assertFalse(p.test(STATION_2));
@@ -219,9 +220,9 @@ class TokensToPredicatesTest {
 
         Tokeniser.assertLegality(tokens);
 
-        var t = new TokensToPredicates(tokens);
+        var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getStationPredicate();
+        var p = t.getStationPredicate(KeyWord.TO).orElseThrow();
 
         assertTrue(p.test(STATION_1));
         assertTrue(p.test(STATION_2));

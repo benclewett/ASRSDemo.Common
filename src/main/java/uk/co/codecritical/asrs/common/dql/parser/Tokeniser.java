@@ -31,7 +31,7 @@ public class Tokeniser {
                             DqlExceptionType.UNKNOWN_KEYWORD,
                             "Query should start with a keyword, not: " + token.word);
                 }
-                keyWord = KeyWord.mapFromString(token.word).get();
+                keyWord = KeyWord.mapFromString(token.word).orElseThrow();
                 if (!keyWord.primaryKeyword) {
                     throw new DqlException(
                             DqlExceptionType.UNEXPECTED_SYNTAX,
@@ -44,13 +44,13 @@ public class Tokeniser {
                             "Phrase '" + token.word + "' should not follow '" + prevToken.tokenType + "'");
                 }
                 if (Token.TokenType.KEYWORD.equals(token.tokenType)) {
-                    var keyword = KeyWord.mapFromString(token.word).orElseThrow();
-                    if (!keyWord.secondaries.contains(keyword)) {
+                    var nextKeyWord = KeyWord.mapFromString(token.word).orElseThrow();
+                    if (!keyWord.checkValidSequence(nextKeyWord)) {
                         throw new DqlException(
                                 DqlExceptionType.UNEXPECTED_SYNTAX,
-                                "Phrase '" + keyword + "' should not follow " + keyWord + "'");
+                                "Phrase '" + nextKeyWord + "' should not follow " + keyWord + "'");
                     }
-                    keyWord = keyword;
+                    keyWord = nextKeyWord;
                 }
             }
 

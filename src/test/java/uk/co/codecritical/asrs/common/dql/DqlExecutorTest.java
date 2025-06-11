@@ -82,9 +82,9 @@ public class DqlExecutorTest {
 
     @Test
     void testAssignments() {
-        final Assignment ab = new Assignment("test", "a");
-        final Assignment cd = new Assignment("test", "b");
-        final Assignment ef = new Assignment("test", "c");
+        final Assignment ab = new Assignment("TEST", "a");
+        final Assignment cd = new Assignment("TEST", "b");
+        final Assignment ef = new Assignment("TEST", "c");
         var query = executor.execute("RETRIEVE property=empty TO capability=picking SET test=a, test=b, test=c");
         assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
         assertTrue(grid.selectedTote.isPresent());
@@ -144,5 +144,56 @@ public class DqlExecutorTest {
     }
 
     //endregion
+
+    //region Pick
+
+    @Test
+    void testPicking_Decant() {
+        var query = executor.execute("PICK INTO tote=1 SET sku=123, amount=13");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertTrue(grid.selectedToteInTo.isPresent());
+        assertEquals(1, grid.selectedToteInTo.get().getId());
+        assertEquals(2, grid.assignments.size());
+        assertEquals(123, grid.sku);
+        assertEquals(13, grid.amount);
+    }
+
+    @Test
+    void testPicking_POG() {
+        var query = executor.execute("PICK OUT_OF tote=2 SET sku=124, amount=15");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertTrue(grid.selectedToteOutOf.isPresent());
+        assertEquals(2, grid.selectedToteOutOf.get().getId());
+        assertEquals(2, grid.assignments.size());
+        assertEquals(124, grid.sku);
+        assertEquals(15, grid.amount);
+    }
+
+    @Test
+    void testPicking_PIG() {
+        var query = executor.execute("PICK OUT_OF tote=2 INTO tote=3 SET sku=127, amount=49");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertTrue(grid.selectedToteInTo.isPresent());
+        assertEquals(2, grid.selectedToteOutOf.get().getId());
+        assertEquals(3, grid.selectedToteInTo.get().getId());
+        assertEquals(2, grid.assignments.size());
+        assertEquals(127, grid.sku);
+        assertEquals(49, grid.amount);
+    }
+
+    @Test
+    void testPicking_PIG2() {
+        var query = executor.execute("PICK INTO tote=3 OUT_OF tote=2 SET sku=127, amount=49");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertTrue(grid.selectedToteInTo.isPresent());
+        assertEquals(2, grid.selectedToteOutOf.get().getId());
+        assertEquals(3, grid.selectedToteInTo.get().getId());
+        assertEquals(2, grid.assignments.size());
+        assertEquals(127, grid.sku);
+        assertEquals(49, grid.amount);
+    }
+
+    //endregion
+
 
 }

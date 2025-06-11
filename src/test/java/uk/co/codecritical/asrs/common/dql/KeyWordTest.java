@@ -12,7 +12,7 @@ public class KeyWordTest {
     @Test
     void testParse() {
         assertEquals(Optional.empty(), KeyWord.mapFromString("foo"));
-        assertEquals(Optional.of(KeyWord.SELECT), KeyWord.mapFromString("select"));
-        assertEquals(Optional.of(KeyWord.SELECT), KeyWord.mapFromString("SELECT"));
+        assertEquals(Optional.of(KeyWord.NONE), KeyWord.mapFromString("none"));
+        assertEquals(Optional.of(KeyWord.NONE), KeyWord.mapFromString("none"));
     }
 }
