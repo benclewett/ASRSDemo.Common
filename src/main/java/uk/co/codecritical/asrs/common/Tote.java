@@ -72,7 +72,11 @@ public class Tote implements ToteDql {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Tote tote = (Tote) o;
-        return id == tote.id && amount == tote.amount && Objects.equals(sku, tote.sku) && Objects.equals(gridPos, tote.gridPos) && Objects.equals(properties, tote.properties);
+        return id == tote.id
+                && amount == tote.amount
+                && Objects.equals(sku, tote.sku)
+                && Objects.equals(gridPos, tote.gridPos)
+                && Objects.equals(properties, tote.properties);
     }
 
     @Override

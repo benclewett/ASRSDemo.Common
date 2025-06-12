@@ -43,14 +43,15 @@ public class DqlQuery {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("query", query)
-                .add("queryId", queryId)
-                .add("queryResponse", queryResponse)
-                .add("errorType", errorType)
-                .add("errorMessage", errorMessage)
-                .add("scriptId", scriptId)
-                .toString();
+        // Use trad toString() as we want the quotes.
+        return "DqlQuery{" +
+                "query='" + query + '\'' +
+                ", queryId='" + queryId + '\'' +
+                ", queryResponse=" + queryResponse +
+                ", errorType=" + errorType +
+                ", errorMessage='" + errorMessage + '\'' +
+                ", scriptId=" + scriptId +
+                '}';
     }
 
     public enum QueryResponse {

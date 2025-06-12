@@ -149,11 +149,11 @@ public class DqlExecutorTest {
 
     @Test
     void testPicking_Decant() {
-        var query = executor.execute("PICK INTO tote=1 SET sku=123, amount=13");
+        var query = executor.execute("PICK INTO tote=1 SET sku=123, amount=13, property='change'");
         assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
         assertTrue(grid.selectedToteInTo.isPresent());
         assertEquals(1, grid.selectedToteInTo.get().getId());
-        assertEquals(2, grid.assignments.size());
+        assertEquals(3, grid.assignments.size());
         assertEquals(123, grid.sku);
         assertEquals(13, grid.amount);
     }
