@@ -7,6 +7,7 @@ import uk.co.codecritical.asrs.common.dql.interfaces.DqlExecutorListener;
 import uk.co.codecritical.asrs.common.dql.interfaces.StationDql;
 import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 import uk.co.codecritical.asrs.common.dql.parser.Assignment;
+import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -119,6 +120,14 @@ public class TestExecutorListener implements DqlExecutorListener {
                 .filter(totePickOutOf)
                 .findFirst();
         return query;
+    }
+
+    @Override
+    public DqlQuery select(DqlQuery query, WordSelect entity) {
+        return query.mutate()
+                .setQueryResponse(DqlQuery.QueryResponse.OK)
+                .setTable(TestSystemVariables.asTable())
+                .build();
     }
 
     //--------------------------------- Supporting Code ------------------------------------

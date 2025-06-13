@@ -17,7 +17,7 @@ public class Tokeniser {
     //region Assert Legality
 
     public static void assertLegality(ImmutableList<Token> tokens) {
-        KeyWord keyWord = null;
+        WordKey wordKey = null;
         Token prevToken = null;
         for (int i = 0; i < tokens.size(); i++) {
             var token = tokens.get(i);
@@ -31,8 +31,8 @@ public class Tokeniser {
                             DqlExceptionType.UNKNOWN_KEYWORD,
                             "Query should start with a keyword, not: " + token.word);
                 }
-                keyWord = KeyWord.mapFromString(token.word).orElseThrow();
-                if (!keyWord.primaryKeyword) {
+                wordKey = WordKey.mapFromString(token.word).orElseThrow();
+                if (!wordKey.primaryKeyword) {
                     throw new DqlException(
                             DqlExceptionType.UNEXPECTED_SYNTAX,
                             "Query starts with a unexpected keyword: '" + token.word + "'");
@@ -44,13 +44,13 @@ public class Tokeniser {
                             "Phrase '" + token.word + "' should not follow '" + prevToken.tokenType + "'");
                 }
                 if (Token.TokenType.KEYWORD.equals(token.tokenType)) {
-                    var nextKeyWord = KeyWord.mapFromString(token.word).orElseThrow();
-                    if (!keyWord.checkValidSequence(nextKeyWord)) {
+                    var nextKeyWord = WordKey.mapFromString(token.word).orElseThrow();
+                    if (!wordKey.checkValidSequence(nextKeyWord)) {
                         throw new DqlException(
                                 DqlExceptionType.UNEXPECTED_SYNTAX,
-                                "Phrase '" + nextKeyWord + "' should not follow " + keyWord + "'");
+                                "Phrase '" + nextKeyWord + "' should not follow " + wordKey + "'");
                     }
-                    keyWord = nextKeyWord;
+                    wordKey = nextKeyWord;
                 }
             }
 
@@ -62,55 +62,82 @@ public class Tokeniser {
 
     //region Strings to Tokens
 
+    enum QuerySection {
+        NOOP(Token.TokenType.KEYWORD),
+        SELECT(Token.TokenType.KEYWORD),
+        SET(Token.TokenType.SET),
+        AXIOM(Token.TokenType.KEYWORD);
+
+        public final Token.TokenType tokenType;
+        QuerySection(Token.TokenType tokenType) {
+            this.tokenType = tokenType;
+        }
+    }
+
     public static ImmutableList<Token> stringsToTokens(ImmutableList<String> strings) {
         ImmutableList.Builder<Token> builder = ImmutableList.builder();
 
-        boolean querySetSection = false;
+        QuerySection querySection = QuerySection.NOOP;
         Token prevToken = null;
         for (int i = 0; i < strings.size(); i++) {
             String word = strings.get(i);
             Token token;
 
-            var keyword = KeyWord.mapFromString(word);
+            var keyword = WordKey.mapFromString(word);
             if (keyword.isPresent()) {
-                querySetSection = KeyWord.SET.equals(keyword.get());
-                if (querySetSection) {
-                    token = new Token(word, Token.TokenType.SET);
-                } else {
-                    token = new Token(word, Token.TokenType.KEYWORD);
-                }
+                querySection = switch (keyword.get()) {
+                    case RETRIEVE, STORE, RELEASE, OUT_OF, INTO, TO, WHERE -> QuerySection.AXIOM;
+                    case PICK, UPDATE, NONE -> QuerySection.NOOP;
+                    case SELECT -> QuerySection.SELECT;
+                    case SET -> QuerySection.SET;
+                };
+                token = new Token(word, querySection.tokenType);
                 builder.add(token);
                 prevToken = token;
                 continue;
             }
 
-            if (querySetSection) {
-                var metricNameWord = MetricNameWord.mapFromString(word);
-                if (metricNameWord.isPresent()) {
-                    token = new Token(word, Token.TokenType.METRIC_NAME);
-                } else if (EQUALS.equals(word)) {
-                    token = new Token(word, Token.TokenType.ASSIGN);
-                } else if (word.equals(",")) {
-                    token = new Token(word, Token.TokenType.COMMA);
-                } else {
-                    token = new Token(word, Token.TokenType.METRIC_VALUE);
+            switch (querySection) {
+                case SELECT -> {
+                    var wordSelect = WordSelect.mapFromString(word);
+                    if (wordSelect.isPresent()) {
+                        token = new Token(word, Token.TokenType.SELECT_ENTITY);
+                    } else {
+                        token = new Token(word, Token.TokenType.NOOP);
+                    }
                 }
-            } else {
-                var entityWord = EntityWord.mapFromString(word);
-                var logicalWord = LogicalWord.mapFromString(word);
-                var comparisonWord = ComparisonWord.mapFromString(word);
-                if (comparisonWord.isPresent()) {
-                    token = new Token(word, Token.TokenType.COMPARISON);
-                } else if (prevToken != null && EQUALS.equals(prevToken.word)) {
-                    token = new Token(word, Token.TokenType.VALUE);
-                } else if (entityWord.isPresent()) {
-                    token = new Token(word, Token.TokenType.ENTITY);
-                } else if (logicalWord.isPresent()) {
-                    token = new Token(word, Token.TokenType.LOGICAL);
-                } else if (word.equals(",")) {
-                    token = new Token(word, Token.TokenType.COMMA);
-                } else {
-                    token = new Token(word, Token.TokenType.VALUE);
+                case SET -> {
+                    var metricNameWord = WordMetricName.mapFromString(word);
+                    if (metricNameWord.isPresent()) {
+                        token = new Token(word, Token.TokenType.METRIC_NAME);
+                    } else if (EQUALS.equals(word)) {
+                        token = new Token(word, Token.TokenType.ASSIGN);
+                    } else if (word.equals(",")) {
+                        token = new Token(word, Token.TokenType.COMMA);
+                    } else {
+                        token = new Token(word, Token.TokenType.METRIC_VALUE);
+                    }
+                }
+                case AXIOM -> {
+                    var entityWord = WordEntity.mapFromString(word);
+                    var logicalWord = WordLogical.mapFromString(word);
+                    var comparisonWord = WordComparison.mapFromString(word);
+                    if (comparisonWord.isPresent()) {
+                        token = new Token(word, Token.TokenType.COMPARISON);
+                    } else if (prevToken != null && EQUALS.equals(prevToken.word)) {
+                        token = new Token(word, Token.TokenType.VALUE);
+                    } else if (entityWord.isPresent()) {
+                        token = new Token(word, Token.TokenType.AXIOM_ENTITY);
+                    } else if (logicalWord.isPresent()) {
+                        token = new Token(word, Token.TokenType.LOGICAL);
+                    } else if (word.equals(",")) {
+                        token = new Token(word, Token.TokenType.COMMA);
+                    } else {
+                        token = new Token(word, Token.TokenType.VALUE);
+                    }
+                }
+                default -> {
+                    token = new Token(word, Token.TokenType.NOOP);
                 }
             }
 
@@ -131,7 +158,7 @@ public class Tokeniser {
         BETWEEN,
         IN_TOKEN,
         IN_DOUBLE_QUOTE,
-        IN_SINGLE_QUOTE;
+        IN_SINGLE_QUOTE
     }
 
     public static ImmutableList<String> queryToStrings(String query) {

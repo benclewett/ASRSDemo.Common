@@ -21,7 +21,7 @@ public class Token {
 
     public enum TokenType {
         KEYWORD,
-        ENTITY,
+        AXIOM_ENTITY,
         LOGICAL,
         COMPARISON,
         COMMA,
@@ -29,7 +29,10 @@ public class Token {
         VALUE,
         SET,
         METRIC_NAME,
-        ASSIGN, METRIC_VALUE
+        ASSIGN,
+        METRIC_VALUE,
+        NOOP,
+        SELECT_ENTITY
     }
 
     public ImmutableSet<TokenType> getLegalFollowingTokens() {
@@ -38,9 +41,9 @@ public class Token {
 
     public static ImmutableSet<TokenType> getLegalFollowingTokens(TokenType tokenType) {
         return switch (tokenType) {
-            case KEYWORD -> ImmutableSet.of(TokenType.ENTITY, TokenType.KEYWORD, TokenType.END);
-            case ENTITY -> ImmutableSet.of(TokenType.LOGICAL, TokenType.COMPARISON, TokenType.KEYWORD, TokenType.END);
-            case LOGICAL -> ImmutableSet.of(TokenType.ENTITY);
+            case KEYWORD -> ImmutableSet.of(TokenType.AXIOM_ENTITY, TokenType.KEYWORD, TokenType.END, TokenType.SELECT_ENTITY);
+            case AXIOM_ENTITY -> ImmutableSet.of(TokenType.LOGICAL, TokenType.COMPARISON, TokenType.KEYWORD, TokenType.END);
+            case LOGICAL -> ImmutableSet.of(TokenType.AXIOM_ENTITY);
             case COMPARISON -> ImmutableSet.of(TokenType.VALUE);
             case COMMA -> ImmutableSet.of(TokenType.METRIC_NAME);
             case VALUE -> ImmutableSet.of(TokenType.COMMA, TokenType.KEYWORD, TokenType.END, TokenType.LOGICAL, TokenType.SET);
@@ -49,6 +52,8 @@ public class Token {
             case METRIC_NAME -> ImmutableSet.of(TokenType.ASSIGN);
             case ASSIGN -> ImmutableSet.of(TokenType.METRIC_VALUE);
             case METRIC_VALUE -> ImmutableSet.of(TokenType.COMMA, TokenType.END);
+            case NOOP -> ImmutableSet.copyOf(TokenType.values());
+            case SELECT_ENTITY -> ImmutableSet.of(TokenType.END, TokenType.SET);
         };
     }
 }

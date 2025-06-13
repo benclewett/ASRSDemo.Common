@@ -225,25 +225,25 @@ class TokeniserTest {
         int i = 0;
         assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.AXIOM_ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
 
         assertEquals(Token.TokenType.LOGICAL, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.AXIOM_ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
 
         assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.AXIOM_ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
 
         assertEquals(Token.TokenType.LOGICAL, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.AXIOM_ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
 
@@ -262,19 +262,19 @@ class TokeniserTest {
         int i = 0;
         assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.AXIOM_ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
 
         assertEquals(Token.TokenType.LOGICAL, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.AXIOM_ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
 
         assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
 
-        assertEquals(Token.TokenType.ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.AXIOM_ENTITY, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.COMPARISON, tokens.get(i++).tokenType);
         assertEquals(Token.TokenType.VALUE, tokens.get(i++).tokenType);
 
@@ -294,4 +294,18 @@ class TokeniserTest {
 
         Tokeniser.assertLegality(tokens);
     }
+
+    @Test
+    void testTokenTypeWithSelect() {
+        var words = Tokeniser.queryToStrings(
+                "select system");
+
+        var tokens = Tokeniser.stringsToTokens(words);
+
+        int i = 0;
+        assertEquals(Token.TokenType.KEYWORD, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.SELECT_ENTITY, tokens.get(i++).tokenType);
+        assertEquals(Token.TokenType.END, tokens.get(i++).tokenType);
+    }
+
 }

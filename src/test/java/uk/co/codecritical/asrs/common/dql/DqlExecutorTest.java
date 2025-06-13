@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import uk.co.codecritical.asrs.common.dql.executor.DqlExecutor;
 import uk.co.codecritical.asrs.common.dql.executor.DqlQuery;
 import uk.co.codecritical.asrs.common.dql.parser.Assignment;
+import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -193,7 +194,15 @@ public class DqlExecutorTest {
         assertEquals(49, grid.amount);
     }
 
+    @Test
+    void testSelect() {
+        var query = executor.execute("SELECT system");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertEquals(1, query.table.rows.size());
+        assertEquals(2, query.table.rows.get(0).size());
+        assertEquals(TestSystemVariables.VERSION, query.table.rows.get(0).get(0));
+        assertEquals(TestSystemVariables.version, query.table.rows.get(0).get(1));
+    }
+
     //endregion
-
-
 }

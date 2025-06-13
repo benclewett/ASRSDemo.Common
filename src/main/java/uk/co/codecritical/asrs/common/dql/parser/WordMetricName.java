@@ -4,19 +4,25 @@ import com.google.common.collect.ImmutableSet;
 
 import java.util.Optional;
 
-public enum MetricNameWord {
+public enum WordMetricName {
+    /** Replace All Tote Properties */
     PROPERTY,
+    /** Add a Tote Property */
     ADD_PROPERTY,
+    /** Remove a Tote property */
     DEL_PROPERTY,
+    /** Sku id */
     SKU,
+    /** Sku Amount */
     AMOUNT,
+    /** Does nothing */
     TEST;   // Does nothing
 
     private static final ImmutableSet<String> SET = createMap();
 
     private static ImmutableSet<String> createMap() {
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-        for (var e : MetricNameWord.values()) {
+        for (var e : WordMetricName.values()) {
             builder.add(e.name());
         }
         return builder.build();
@@ -26,9 +32,9 @@ public enum MetricNameWord {
         return SET.contains(name.toUpperCase());
     }
 
-    public static Optional<MetricNameWord> mapFromString(String word) {
+    public static Optional<WordMetricName> mapFromString(String word) {
         if (SET.contains(word.toUpperCase())) {
-            return Optional.of(MetricNameWord.valueOf(word.toUpperCase()));
+            return Optional.of(WordMetricName.valueOf(word.toUpperCase()));
         } else {
             return Optional.empty();
         }

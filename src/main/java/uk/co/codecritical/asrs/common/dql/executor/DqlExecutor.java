@@ -5,9 +5,11 @@ import uk.co.codecritical.asrs.common.dql.interfaces.StationDql;
 import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 import uk.co.codecritical.asrs.common.dql.parser.DqlExceptionType;
 import uk.co.codecritical.asrs.common.dql.parser.DqlException;
-import uk.co.codecritical.asrs.common.dql.parser.KeyWord;
+import uk.co.codecritical.asrs.common.dql.parser.Token;
+import uk.co.codecritical.asrs.common.dql.parser.WordKey;
 import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
 import uk.co.codecritical.asrs.common.dql.parser.TokensToPredicates;
+import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
 
 import java.util.function.Predicate;
 
@@ -37,25 +39,25 @@ public class DqlExecutor {
                 case RETRIEVE -> {
                     dqlQuery = dqlExecutorListener.toteRetrievalDql(
                             dqlQuery,
-                            tokensToPredicates.getTotePredicate(KeyWord.RETRIEVE).orElse(ALL_TOTES),
-                            tokensToPredicates.getStationPredicate(KeyWord.TO).orElse(ALL_STATIONS),
+                            tokensToPredicates.getTotePredicate(WordKey.RETRIEVE).orElse(ALL_TOTES),
+                            tokensToPredicates.getStationPredicate(WordKey.TO).orElse(ALL_STATIONS),
                             tokensToPredicates.getAssignment());
                 }
                 case STORE -> {
                     dqlQuery = dqlExecutorListener.toteStorageDql(
                             dqlQuery,
-                            tokensToPredicates.getTotePredicate(KeyWord.STORE).orElse(ALL_TOTES),
+                            tokensToPredicates.getTotePredicate(WordKey.STORE).orElse(ALL_TOTES),
                             tokensToPredicates.getAssignment());
                 }
                 case RELEASE -> {
                     dqlQuery = dqlExecutorListener.toteReleaseDql(
                             dqlQuery,
-                            tokensToPredicates.getTotePredicate(KeyWord.RELEASE).orElse(ALL_TOTES),
+                            tokensToPredicates.getTotePredicate(WordKey.RELEASE).orElse(ALL_TOTES),
                             tokensToPredicates.getAssignment());
                 }
                 case PICK -> {
-                    var pickOutOf = tokensToPredicates.getTotePredicate(KeyWord.OUT_OF);
-                    var pickInTo = tokensToPredicates.getTotePredicate(KeyWord.INTO);
+                    var pickOutOf = tokensToPredicates.getTotePredicate(WordKey.OUT_OF);
+                    var pickInTo = tokensToPredicates.getTotePredicate(WordKey.INTO);
                     if (pickOutOf.isEmpty() && pickInTo.isEmpty()) {
                         throw new DqlException(
                                 DqlExceptionType.UNEXPECTED_SYNTAX,
@@ -77,6 +79,23 @@ public class DqlExecutor {
                                 pickInTo.get(),
                                 tokensToPredicates.getAssignment());
                     }
+                }
+                case SELECT -> {
+                    var selectEntity = tokens.stream()
+                            .filter(t -> Token.TokenType.SELECT_ENTITY.equals(t.tokenType))
+                            .findFirst();
+                    if (selectEntity.isEmpty()) {
+                        throw new DqlException(
+                                DqlExceptionType.NOT_POSSIBLE,
+                                "No SELECT entity requested.");
+                    }
+                    var wordSelect = WordSelect.mapFromString(selectEntity.get().word);
+                    if (wordSelect.isEmpty()) {
+                        throw new DqlException(
+                                DqlExceptionType.UNSUPPORTED,
+                                "Unsupported select entity: " + selectEntity.get());
+                    }
+                    dqlQuery = dqlExecutorListener.select(dqlQuery, wordSelect.get());
                 }
                 default -> throw new DqlException(
                         DqlExceptionType.UNSUPPORTED,

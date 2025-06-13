@@ -1,7 +1,7 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import org.junit.jupiter.api.Test;
-import uk.co.codecritical.asrs.common.dql.parser.KeyWord;
+import uk.co.codecritical.asrs.common.dql.parser.WordKey;
 import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
 import uk.co.codecritical.asrs.common.dql.parser.TokensToPredicates;
 
@@ -29,7 +29,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
+        var p = t.getTotePredicate(WordKey.RETRIEVE).orElseThrow();
 
         assertTrue(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
@@ -46,7 +46,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
+        var p = t.getTotePredicate(WordKey.RETRIEVE).orElseThrow();
 
         assertFalse(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -63,7 +63,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
+        var p = t.getTotePredicate(WordKey.RETRIEVE).orElseThrow();
 
         assertTrue(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -79,7 +79,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
+        var p = t.getTotePredicate(WordKey.RETRIEVE).orElseThrow();
 
         assertFalse(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -96,7 +96,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
+        var p = t.getTotePredicate(WordKey.RETRIEVE).orElseThrow();
 
         assertTrue(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -114,7 +114,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
+        var p = t.getTotePredicate(WordKey.RETRIEVE).orElseThrow();
 
         assertTrue(p.test(TOTE_1));
         assertTrue(p.test(TOTE_2));
@@ -132,7 +132,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
+        var p = t.getTotePredicate(WordKey.RETRIEVE).orElseThrow();
 
         assertFalse(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
@@ -150,7 +150,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getTotePredicate(KeyWord.RETRIEVE).orElseThrow();
+        var p = t.getTotePredicate(WordKey.RETRIEVE).orElseThrow();
 
         assertFalse(p.test(TOTE_1));
         assertFalse(p.test(TOTE_2));
@@ -168,7 +168,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getStationPredicate(KeyWord.TO).orElseThrow();
+        var p = t.getStationPredicate(WordKey.TO).orElseThrow();
 
         assertTrue(p.test(STATION_1));
         assertFalse(p.test(STATION_2));
@@ -186,7 +186,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getStationPredicate(KeyWord.TO).orElseThrow();
+        var p = t.getStationPredicate(WordKey.TO).orElseThrow();
 
         assertTrue(p.test(STATION_1));
         assertTrue(p.test(STATION_2));
@@ -204,7 +204,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getStationPredicate(KeyWord.TO).orElseThrow();
+        var p = t.getStationPredicate(WordKey.TO).orElseThrow();
 
         assertTrue(p.test(STATION_1));
         assertFalse(p.test(STATION_2));
@@ -222,7 +222,7 @@ class TokensToPredicatesTest {
 
         var t = TokensToPredicates.parse(tokens);
 
-        var p = t.getStationPredicate(KeyWord.TO).orElseThrow();
+        var p = t.getStationPredicate(WordKey.TO).orElseThrow();
 
         assertTrue(p.test(STATION_1));
         assertTrue(p.test(STATION_2));

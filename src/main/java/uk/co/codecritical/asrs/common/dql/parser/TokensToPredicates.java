@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 public class TokensToPredicates {
     private final ImmutableList<Token> tokens;
 
-    private final Map<KeyWord, KeyWordPredicates> predicates = new HashMap<>();
+    private final Map<WordKey, KeyWordPredicates> predicates = new HashMap<>();
 
     private final ImmutableList<Assignment> assignments;
 
@@ -34,11 +34,11 @@ public class TokensToPredicates {
     private void buildPredicate(Axiom axiom) {
 
         KeyWordPredicates keyWordPredicates = predicates.computeIfAbsent(
-                axiom.keyWord,
+                axiom.wordKey,
                 KeyWordPredicates::new
         );
 
-        switch (axiom.entityWord) {
+        switch (axiom.wordEntity) {
             case TOTE -> addPredicateToteId(keyWordPredicates, axiom.value, axiom.comparison, axiom.preLogic);
             case PROPERTY -> addPredicateToteProperty(keyWordPredicates, axiom.value, axiom.comparison, axiom.preLogic);
             case STATION -> addPredicateStationId(keyWordPredicates, axiom.value, axiom.comparison, axiom.preLogic);
@@ -46,12 +46,12 @@ public class TokensToPredicates {
             default ->
                 throw new DqlException(
                         DqlExceptionType.UNSUPPORTED,
-                        "Entity '%s' is currently unsupported.".formatted(axiom.entityWord.name()));
+                        "Entity '%s' is currently unsupported.".formatted(axiom.wordEntity.name()));
         }
     }
 
-    private void addPredicateStationCapability(KeyWordPredicates keyP, String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
-        Predicate<StationDql> p = switch (comparisonWord) {
+    private void addPredicateStationCapability(KeyWordPredicates keyP, String value, WordComparison wordComparison, Optional<WordLogical> preLogic) {
+        Predicate<StationDql> p = switch (wordComparison) {
             case EQUAL -> (value.isEmpty())
                     ? station -> station.getCapability().isEmpty()
                     : station -> station.getCapability().map(c -> station.filter(value).equals(c)).orElse(false);
@@ -59,7 +59,7 @@ public class TokensToPredicates {
                     ? station -> station.getCapability().isPresent()
                     : station -> !station.getCapability().map(c -> station.filter(value).equals(c)).orElse(false);
         };
-        keyP.stationP = switch (preLogic.orElse(LogicalWord.AND)) {
+        keyP.stationP = switch (preLogic.orElse(WordLogical.AND)) {
             case AND -> keyP.stationP.map(predicate -> predicate.and(p))
                     .or(() -> Optional.of(p));
             case OR -> keyP.stationP.map(predicate -> predicate.or(p))
@@ -70,14 +70,14 @@ public class TokensToPredicates {
         };
     }
 
-    private void addPredicateStationId(KeyWordPredicates keyP, String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
+    private void addPredicateStationId(KeyWordPredicates keyP, String value, WordComparison wordComparison, Optional<WordLogical> preLogic) {
         try {
             var valueI = Integer.parseInt(value);
-            Predicate<StationDql> p = switch (comparisonWord) {
+            Predicate<StationDql> p = switch (wordComparison) {
                 case EQUAL -> station -> station.getId() == valueI;
                 case NOT_EQUAL -> station -> station.getId() != valueI;
             };
-            keyP.stationP = switch (preLogic.orElse(LogicalWord.AND)) {
+            keyP.stationP = switch (preLogic.orElse(WordLogical.AND)) {
                 case AND -> keyP.stationP.map(predicate -> predicate.and(p))
                         .or(() -> Optional.of(p));
                 case OR -> keyP.stationP.map(predicate -> predicate.or(p))
@@ -93,8 +93,8 @@ public class TokensToPredicates {
         }
     }
 
-    private void addPredicateToteProperty(KeyWordPredicates keyP, String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
-        Predicate<ToteDql> p = switch (comparisonWord) {
+    private void addPredicateToteProperty(KeyWordPredicates keyP, String value, WordComparison wordComparison, Optional<WordLogical> preLogic) {
+        Predicate<ToteDql> p = switch (wordComparison) {
             case EQUAL -> (value.isEmpty())
                     ? tote -> tote.getProperties().isEmpty()
                     : tote -> tote.getProperties().contains(tote.filter(value));
@@ -102,7 +102,7 @@ public class TokensToPredicates {
                     ? tote -> !tote.getProperties().isEmpty()
                     : tote -> !tote.getProperties().contains(tote.filter(value));
         };
-        keyP.toteP = switch (preLogic.orElse(LogicalWord.AND)) {
+        keyP.toteP = switch (preLogic.orElse(WordLogical.AND)) {
             case AND -> keyP.toteP.map(predicate -> predicate.and(p))
                     .or(() -> Optional.of(p));
             case OR -> keyP.toteP.map(predicate -> predicate.or(p))
@@ -113,14 +113,14 @@ public class TokensToPredicates {
         };
     }
 
-    private void addPredicateToteId(KeyWordPredicates keyP, String value, ComparisonWord comparisonWord, Optional<LogicalWord> preLogic) {
+    private void addPredicateToteId(KeyWordPredicates keyP, String value, WordComparison wordComparison, Optional<WordLogical> preLogic) {
         try {
             var valueI = Integer.parseInt(value);
-            Predicate<ToteDql> p = switch (comparisonWord) {
+            Predicate<ToteDql> p = switch (wordComparison) {
                 case EQUAL -> tote -> tote.getId() == valueI;
                 case NOT_EQUAL -> tote -> tote.getId() != valueI;
             };
-            keyP.toteP = switch (preLogic.orElse(LogicalWord.AND)) {
+            keyP.toteP = switch (preLogic.orElse(WordLogical.AND)) {
                 case AND -> keyP.toteP.map(predicate -> predicate.and(p))
                         .or(() -> Optional.of(p));
                 case OR -> keyP.toteP.map(predicate -> predicate.or(p))
@@ -138,47 +138,47 @@ public class TokensToPredicates {
 
     //region Axioms
 
-    private record Axiom (KeyWord keyWord, Optional<LogicalWord> preLogic, EntityWord entityWord, ComparisonWord comparison, String value) {}
+    private record Axiom (WordKey wordKey, Optional<WordLogical> preLogic, WordEntity wordEntity, WordComparison comparison, String value) {}
 
     private ImmutableSet<Axiom> findAxioms() {
         ImmutableSet.Builder<Axiom> builder = ImmutableSet.builder();
-        KeyWord keyWord = KeyWord.NONE;
+        WordKey wordKey = WordKey.NONE;
         for (int i = 0; i < tokens.size() - 2; i++) {
-            keyWord = mapTokenToAxiom(keyWord, i, builder);
+            wordKey = mapTokenToAxiom(wordKey, i, builder);
         }
         return builder.build();
     }
 
-    private KeyWord mapTokenToAxiom(KeyWord keyWord, int i, ImmutableSet.Builder<Axiom> builder) {
+    private WordKey mapTokenToAxiom(WordKey wordKey, int i, ImmutableSet.Builder<Axiom> builder) {
         var tokenType = tokens.get(i).tokenType;
 
         if (Token.TokenType.KEYWORD.equals(tokenType)) {
-            return KeyWord.mapFromString(tokens.get(i).word).orElseThrow();
+            return WordKey.mapFromString(tokens.get(i).word).orElseThrow();
         }
 
-        if (Token.TokenType.ENTITY.equals(tokens.get(i).tokenType)
+        if (Token.TokenType.AXIOM_ENTITY.equals(tokens.get(i).tokenType)
             && Token.TokenType.COMPARISON.equals(tokens.get(i + 1).tokenType)
             && Token.TokenType.VALUE.equals(tokens.get(i + 2).tokenType)) {
 
-            Optional<LogicalWord> logic = (i > 1)
-                    ? LogicalWord.mapFromString(tokens.get(i - 1).word)
+            Optional<WordLogical> logic = (i > 1)
+                    ? WordLogical.mapFromString(tokens.get(i - 1).word)
                     : Optional.empty();
 
             builder.add(new Axiom(
-                    keyWord,
+                    wordKey,
                     logic,
-                    EntityWord.mapFromString(tokens.get(i).word).orElseThrow(),
-                    ComparisonWord.mapFromString(tokens.get(i + 1).word).orElseThrow(),
+                    WordEntity.mapFromString(tokens.get(i).word).orElseThrow(),
+                    WordComparison.mapFromString(tokens.get(i + 1).word).orElseThrow(),
                     tokens.get(i + 2).word));
         }
 
-        return keyWord;
+        return wordKey;
     }
 
     //endregion
 
-    public KeyWord getKeyWord() {
-        return KeyWord.mapFromString(tokens.get(0).word).orElseThrow();
+    public WordKey getKeyWord() {
+        return WordKey.mapFromString(tokens.get(0).word).orElseThrow();
     }
 
     //region Assignments
@@ -201,13 +201,13 @@ public class TokensToPredicates {
 
     //region Output
 
-    public Optional<Predicate<ToteDql>> getTotePredicate(KeyWord keyWord) {
-        return Optional.ofNullable(predicates.get(keyWord))
+    public Optional<Predicate<ToteDql>> getTotePredicate(WordKey wordKey) {
+        return Optional.ofNullable(predicates.get(wordKey))
                 .flatMap(p -> p.toteP);
     }
 
-    public Optional<Predicate<StationDql>> getStationPredicate(KeyWord keyWord) {
-        return Optional.ofNullable(predicates.get(keyWord))
+    public Optional<Predicate<StationDql>> getStationPredicate(WordKey wordKey) {
+        return Optional.ofNullable(predicates.get(wordKey))
                 .flatMap(p -> p.stationP);
     }
 
@@ -218,8 +218,8 @@ public class TokensToPredicates {
     //endregion
 
     static class KeyWordPredicates {
-        final KeyWord keyword;
-        public KeyWordPredicates(KeyWord keyword) {
+        final WordKey keyword;
+        public KeyWordPredicates(WordKey keyword) {
             this.keyword = keyword;
         }
         public Optional<Predicate<ToteDql>> toteP = Optional.empty();
@@ -228,7 +228,7 @@ public class TokensToPredicates {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                    .add("keyWord", keyword)
+                    .add("wordKey", keyword)
                     .add("toteDqlPredicate", toteP.isPresent())
                     .add("stationDqlPredicate", stationP.isPresent())
                     .toString();
