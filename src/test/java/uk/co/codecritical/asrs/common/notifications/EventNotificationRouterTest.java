@@ -41,6 +41,7 @@ public class EventNotificationRouterTest {
     static class MyNotification extends Notification {
         public final String message;
         public MyNotification(String message) {
+            super(Level.INFO);
             this.message = message;
         }
     }
