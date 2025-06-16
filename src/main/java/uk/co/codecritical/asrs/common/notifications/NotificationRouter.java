@@ -11,10 +11,14 @@ public class NotificationRouter {
     }
 
     public static void add(EventSender<? extends Notification> eventSender) {
-        eventSenders.add(eventSender);
+        synchronized (eventSenders) {
+            eventSenders.add(eventSender);
+        }
     }
 
     public static void clearAll() {
-        eventSenders.forEach(EventSender::clear);
+        synchronized (eventSenders) {
+            eventSenders.forEach(EventSender::clear);
+        }
     }
 }

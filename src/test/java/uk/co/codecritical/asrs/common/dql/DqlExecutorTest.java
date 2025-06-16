@@ -195,8 +195,28 @@ public class DqlExecutorTest {
     }
 
     @Test
-    void testSelect() {
+    void testSelect_System() {
         var query = executor.execute("SELECT system");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertEquals(1, query.table.rows.size());
+        assertEquals(2, query.table.rows.get(0).size());
+        assertEquals(TestSystemVariables.VERSION, query.table.rows.get(0).get(0));
+        assertEquals(TestSystemVariables.version, query.table.rows.get(0).get(1));
+    }
+
+    @Test
+    void testSelect_Station() {
+        var query = executor.execute("SELECT station");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertEquals(1, query.table.rows.size());
+        assertEquals(2, query.table.rows.get(0).size());
+        assertEquals(TestSystemVariables.VERSION, query.table.rows.get(0).get(0));
+        assertEquals(TestSystemVariables.version, query.table.rows.get(0).get(1));
+    }
+
+    @Test
+    void testSelect_Decant() {
+        var query = executor.execute("SELECT decant");
         assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
         assertEquals(1, query.table.rows.size());
         assertEquals(2, query.table.rows.get(0).size());

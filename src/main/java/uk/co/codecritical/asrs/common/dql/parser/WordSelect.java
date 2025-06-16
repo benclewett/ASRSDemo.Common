@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public enum WordSelect {
     /** System Variables */
-    SYSTEM;
+    SYSTEM,
+    STATION,
+    DECANT;
 
     public static final ImmutableSet<String> ALL_AS_STRING = Arrays.stream(WordSelect.values())
             .map(Enum::toString)

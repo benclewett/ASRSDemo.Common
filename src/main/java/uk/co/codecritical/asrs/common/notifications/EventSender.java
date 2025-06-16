@@ -11,14 +11,20 @@ public class EventSender<N extends Notification> {
     }
 
     public void addListener(Listener<N> listener) {
-        queue.add(listener);
+        synchronized (queue) {
+            queue.add(listener);
+        }
     }
 
     public void sendNotification(N n) {
-        queue.forEach(l -> l.handleNotification(n));
+        synchronized (queue) {
+            queue.forEach(l -> l.handleNotification(n));
+        }
     }
 
     void clear() {
-        queue.clear();
+        synchronized (queue) {
+            queue.clear();
+        }
     }
 }
