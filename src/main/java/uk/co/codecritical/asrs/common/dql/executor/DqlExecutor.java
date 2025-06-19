@@ -61,7 +61,7 @@ public class DqlExecutor {
                     if (pickOutOf.isEmpty() && pickInTo.isEmpty()) {
                         throw new DqlException(
                                 DqlExceptionType.UNEXPECTED_SYNTAX,
-                                "PICK query must have either OUTOF, INTO, or both for PIG.  This query has neither.");
+                                "PICK query must have either OUT_OF, INTO, or both for PIG.  This query has neither.");
                     } else if (pickOutOf.isEmpty()) {
                         dqlQuery = dqlExecutorListener.pickIntoDql(
                                 dqlQuery,
