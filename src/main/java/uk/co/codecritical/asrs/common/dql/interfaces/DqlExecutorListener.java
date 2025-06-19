@@ -3,10 +3,8 @@ package uk.co.codecritical.asrs.common.dql.interfaces;
 import com.google.common.collect.ImmutableList;
 import uk.co.codecritical.asrs.common.dql.executor.DqlQuery;
 import uk.co.codecritical.asrs.common.dql.parser.Assignment;
-import uk.co.codecritical.asrs.common.dql.parser.Token;
 import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
 
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public interface DqlExecutorListener {
@@ -49,6 +47,8 @@ public interface DqlExecutorListener {
             ImmutableList<Assignment> assignments
     );
 
-    DqlQuery select(DqlQuery dqlQuery,
-                    WordSelect entity);
+    DqlQuery select(
+            DqlQuery dqlQuery,
+            WordSelect entity
+    );
 }

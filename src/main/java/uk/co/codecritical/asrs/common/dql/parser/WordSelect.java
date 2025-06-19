@@ -6,10 +6,12 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum WordSelect {
-    /** System Variables */
+    /** System Variables & State */
     SYSTEM,
     STATION,
-    DECANT;
+    DECANT,
+    TOTE,
+    BOT;
 
     public static final ImmutableSet<String> ALL_AS_STRING = Arrays.stream(WordSelect.values())
             .map(Enum::toString)
@@ -22,5 +24,4 @@ public enum WordSelect {
                 .findFirst()
                 .map(WordSelect::valueOf);
     }
-
 }
