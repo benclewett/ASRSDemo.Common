@@ -140,6 +140,10 @@ public class Tote implements ToteDql {
             this.gridPos = gridPos;
             return this;
         }
+        public Builder setGridPos(Pos gridPos) {
+            this.gridPos = Optional.of(gridPos);
+            return this;
+        }
         public Builder removeSku() {
             this.sku = Optional.empty();
             return this;
