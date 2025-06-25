@@ -15,6 +15,8 @@ public class DqlQuery {
     public final String errorMessage;
     public final OptionalInt scriptId;
     public final DqlTable table;
+    public final @CheckForNull Integer selectedToteId;
+    public final @CheckForNull Integer selectedStationId;
 
     private DqlQuery(
             String query,
@@ -23,7 +25,9 @@ public class DqlQuery {
             @CheckForNull DqlExceptionType errorType,
             String errorMessage,
             OptionalInt scripId,
-            DqlTable table
+            DqlTable table,
+            @CheckForNull Integer selectedToteId,
+            @CheckForNull Integer selectedStationId
     ) {
         this.query = query;
         this.queryId = queryId;
@@ -32,6 +36,8 @@ public class DqlQuery {
         this.errorMessage = errorMessage;
         this.scriptId = scripId;
         this.table = table;
+        this.selectedToteId = selectedToteId;
+        this.selectedStationId = selectedStationId;
     }
 
     public static DqlQuery create() {
@@ -42,7 +48,9 @@ public class DqlQuery {
                 null,
                 "",
                 OptionalInt.empty(),
-                DqlTable.EMPTY);
+                DqlTable.EMPTY,
+                null,
+                null);
     }
 
     @Override
@@ -56,6 +64,8 @@ public class DqlQuery {
                 ", errorMessage='" + errorMessage + '\'' +
                 ", scriptId='" + scriptId + '\'' +
                 ", table='" + table + '\'' +
+                ", selectedToteId='" + selectedToteId + '\'' +
+                ", selectedStationId='" + selectedStationId + '\'' +
                 '}';
     }
 
@@ -83,7 +93,9 @@ public class DqlQuery {
                 .setErrorMessage(errorMessage)
                 .setErrorType(errorType)
                 .setScriptId(scriptId)
-                .setTable(table);
+                .setTable(table)
+                .setSelectedToteId(selectedToteId)
+                .setSelectedStationId(selectedStationId);
     }
 
     public static Builder builder() {
@@ -101,6 +113,8 @@ public class DqlQuery {
         String errorMessage = null;
         OptionalInt scriptId = OptionalInt.empty();
         DqlTable table = DqlTable.EMPTY;
+        @CheckForNull Integer selectedToteId = null;
+        @CheckForNull Integer selectedStationId = null;
         public Builder() {
         }
         public Builder setQuery(String query) {
@@ -135,6 +149,14 @@ public class DqlQuery {
             this.table = table;
             return this;
         }
+        public Builder setSelectedToteId(@CheckForNull Integer toteId) {
+            this.selectedToteId = toteId;
+            return this;
+        }
+        public Builder setSelectedStationId(@CheckForNull Integer stationId) {
+            this.selectedStationId = stationId;
+            return this;
+        }
         public DqlQuery build() {
             assert (query != null);
             assert(queryId != null);
@@ -147,7 +169,9 @@ public class DqlQuery {
                     errorType,
                     errorMessage,
                     scriptId,
-                    table);
+                    table,
+                    selectedToteId,
+                    selectedStationId);
         }
     }
 
