@@ -17,13 +17,15 @@ public class Tote implements ToteDql {
     @JsonIgnore
     public final Optional<Pos> gridPos;
     public final TokenSet properties;
+    public final Availability available;
 
-    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties) {
+    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties, Availability available) {
         this.id = id;
         this.sku = sku;
         this.amount = amount;
         this.gridPos = gridPos;
         this.properties = properties;
+        this.available = available;
     }
 
     @Override
@@ -34,7 +36,15 @@ public class Tote implements ToteDql {
                 .add("amount", amount)
                 .add("gridPos", gridPos)
                 .add("properties", properties)
+                .add("available", available)
                 .toString();
+    }
+
+    public enum Availability {
+        AVAILABLE_RETRIEVE,
+        AVAILABLE_STORE,
+        AVAILABLE_PICKING,
+        UNAVAILABLE
     }
 
     public String niceProduct() {
@@ -76,12 +86,13 @@ public class Tote implements ToteDql {
                 && amount == tote.amount
                 && Objects.equals(sku, tote.sku)
                 && Objects.equals(gridPos, tote.gridPos)
-                && Objects.equals(properties, tote.properties);
+                && Objects.equals(properties, tote.properties)
+                && Objects.equals(available, tote.available);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sku, amount, gridPos, properties);
+        return Objects.hash(id, sku, amount, gridPos, properties, available);
     }
 
     //region Builder
@@ -108,7 +119,8 @@ public class Tote implements ToteDql {
                 .setAmount(amount)
                 .setGridPos(gridPos)
                 .setSku(sku)
-                .setProperties(properties);
+                .setProperties(properties)
+                .setAvailable(available);
     }
 
     public static class Builder {
@@ -117,6 +129,7 @@ public class Tote implements ToteDql {
         private int amount = 0;
         private Optional<Pos> gridPos = Optional.empty();
         private TokenSet properties = TokenSet.EMPTY;
+        private Availability available = Availability.AVAILABLE_RETRIEVE;
         private Builder() {
             this.id = getNextId();
         }
@@ -172,9 +185,13 @@ public class Tote implements ToteDql {
             this.properties = this.properties.mutate().removeToken(TokenSet.filter(property)).build();
             return this;
         }
+        public Builder setAvailable(Availability available) {
+            this.available = available;
+            return this;
+        }
         public Tote build() {
             assert (sku.isEmpty() && amount == 0 || sku.isPresent() && amount != 0);
-            return new Tote(id, sku, amount, gridPos, properties);
+            return new Tote(id, sku, amount, gridPos, properties, available);
         }
     }
 

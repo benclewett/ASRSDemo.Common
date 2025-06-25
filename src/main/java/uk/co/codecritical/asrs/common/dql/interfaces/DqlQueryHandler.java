@@ -7,7 +7,7 @@ import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
 
 import java.util.function.Predicate;
 
-public interface DqlExecutorListener {
+public interface DqlQueryHandler {
 
     DqlQuery toteRetrievalDql(
             DqlQuery query,

@@ -3,7 +3,7 @@ package uk.co.codecritical.asrs.common.dql;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import uk.co.codecritical.asrs.common.dql.executor.DqlQuery;
-import uk.co.codecritical.asrs.common.dql.interfaces.DqlExecutorListener;
+import uk.co.codecritical.asrs.common.dql.interfaces.DqlQueryHandler;
 import uk.co.codecritical.asrs.common.dql.interfaces.StationDql;
 import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 import uk.co.codecritical.asrs.common.dql.parser.Assignment;
@@ -12,7 +12,7 @@ import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class TestExecutorListener implements DqlExecutorListener {
+public class TestQueryHandler implements DqlQueryHandler {
     private static final ImmutableList<ToteDql> TOTES = ImmutableList.of(
         new TestTote(1, "EMPTY"),
         new TestTote(2, "EMPTY"),

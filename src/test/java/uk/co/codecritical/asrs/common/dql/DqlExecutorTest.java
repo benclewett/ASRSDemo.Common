@@ -5,19 +5,18 @@ import org.junit.jupiter.api.Test;
 import uk.co.codecritical.asrs.common.dql.executor.DqlExecutor;
 import uk.co.codecritical.asrs.common.dql.executor.DqlQuery;
 import uk.co.codecritical.asrs.common.dql.parser.Assignment;
-import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DqlExecutorTest {
-    TestExecutorListener grid;
+    TestQueryHandler grid;
     DqlExecutor executor;
 
     @BeforeEach
     void beforeEach() {
-        grid = new TestExecutorListener();
+        grid = new TestQueryHandler();
         executor = new DqlExecutor(grid);
     }
 

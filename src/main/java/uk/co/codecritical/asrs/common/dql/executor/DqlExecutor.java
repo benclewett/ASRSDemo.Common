@@ -1,6 +1,6 @@
 package uk.co.codecritical.asrs.common.dql.executor;
 
-import uk.co.codecritical.asrs.common.dql.interfaces.DqlExecutorListener;
+import uk.co.codecritical.asrs.common.dql.interfaces.DqlQueryHandler;
 import uk.co.codecritical.asrs.common.dql.interfaces.StationDql;
 import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 import uk.co.codecritical.asrs.common.dql.parser.DqlExceptionType;
@@ -17,10 +17,10 @@ public class DqlExecutor {
     static final Predicate<ToteDql> ALL_TOTES = toteDql -> true;
     static final Predicate<StationDql> ALL_STATIONS = toteDql -> true;
 
-    private final DqlExecutorListener dqlExecutorListener;
+    private final DqlQueryHandler dqlQueryHandler;
 
-    public DqlExecutor(DqlExecutorListener dqlExecutorListener) {
-        this.dqlExecutorListener = dqlExecutorListener;
+    public DqlExecutor(DqlQueryHandler dqlQueryHandler) {
+        this.dqlQueryHandler = dqlQueryHandler;
     }
 
     public DqlQuery execute(String query) {
@@ -37,20 +37,20 @@ public class DqlExecutor {
 
             switch (tokensToPredicates.getKeyWord()) {
                 case RETRIEVE -> {
-                    dqlQuery = dqlExecutorListener.toteRetrievalDql(
+                    dqlQuery = dqlQueryHandler.toteRetrievalDql(
                             dqlQuery,
                             tokensToPredicates.getTotePredicate(WordKey.RETRIEVE).orElse(ALL_TOTES),
                             tokensToPredicates.getStationPredicate(WordKey.TO).orElse(ALL_STATIONS),
                             tokensToPredicates.getAssignment());
                 }
                 case STORE -> {
-                    dqlQuery = dqlExecutorListener.toteStorageDql(
+                    dqlQuery = dqlQueryHandler.toteStorageDql(
                             dqlQuery,
                             tokensToPredicates.getTotePredicate(WordKey.STORE).orElse(ALL_TOTES),
                             tokensToPredicates.getAssignment());
                 }
                 case RELEASE -> {
-                    dqlQuery = dqlExecutorListener.toteReleaseDql(
+                    dqlQuery = dqlQueryHandler.toteReleaseDql(
                             dqlQuery,
                             tokensToPredicates.getTotePredicate(WordKey.RELEASE).orElse(ALL_TOTES),
                             tokensToPredicates.getAssignment());
@@ -63,17 +63,17 @@ public class DqlExecutor {
                                 DqlExceptionType.UNEXPECTED_SYNTAX,
                                 "PICK query must have either OUT_OF, INTO, or both for PIG.  This query has neither.");
                     } else if (pickOutOf.isEmpty()) {
-                        dqlQuery = dqlExecutorListener.pickIntoDql(
+                        dqlQuery = dqlQueryHandler.pickIntoDql(
                                 dqlQuery,
                                 pickInTo.get(),
                                 tokensToPredicates.getAssignment());
                     } else if (pickInTo.isEmpty()) {
-                        dqlQuery = dqlExecutorListener.pickOutOfDql(
+                        dqlQuery = dqlQueryHandler.pickOutOfDql(
                                 dqlQuery,
                                 pickOutOf.get(),
                                 tokensToPredicates.getAssignment());
                     } else {
-                        dqlQuery = dqlExecutorListener.pickToteToToteDql(
+                        dqlQuery = dqlQueryHandler.pickToteToToteDql(
                                 dqlQuery,
                                 pickOutOf.get(),
                                 pickInTo.get(),
@@ -95,7 +95,7 @@ public class DqlExecutor {
                                 DqlExceptionType.UNSUPPORTED,
                                 "Unsupported select entity: " + selectEntity.get());
                     }
-                    dqlQuery = dqlExecutorListener.select(dqlQuery, wordSelect.get());
+                    dqlQuery = dqlQueryHandler.select(dqlQuery, wordSelect.get());
                 }
                 default -> throw new DqlException(
                         DqlExceptionType.UNSUPPORTED,

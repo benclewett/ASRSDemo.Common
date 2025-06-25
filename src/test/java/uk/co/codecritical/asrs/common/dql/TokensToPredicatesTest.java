@@ -16,8 +16,8 @@ class TokensToPredicatesTest {
 
     static final TestStation STATION_1 = new TestStation(1, "DECANT");
     static final TestStation STATION_2 = new TestStation(2, "DECANT");
-    static final TestStation STATION_3 = new TestStation(3, "PICK");
-    static final TestStation STATION_4 = new TestStation(4, "PICK");
+    static final TestStation STATION_3 = new TestStation(3, "PICKING");
+    static final TestStation STATION_4 = new TestStation(4, "PICKING");
 
     @Test
     void testToteById() {
@@ -177,7 +177,7 @@ class TokensToPredicatesTest {
     }
 
     @Test
-    void testStationByCapability() {
+    void testStationByCapabilityDecant() {
         var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
                 "RETRIEVE tote=1 TO capability=decant"
         ));
@@ -192,6 +192,24 @@ class TokensToPredicatesTest {
         assertTrue(p.test(STATION_2));
         assertFalse(p.test(STATION_3));
         assertFalse(p.test(STATION_4));
+    }
+
+    @Test
+    void testStationByCapabilityPick() {
+        var tokens = Tokeniser.stringsToTokens(Tokeniser.queryToStrings(
+                "RETRIEVE tote=1 TO capability=picking"
+        ));
+
+        Tokeniser.assertLegality(tokens);
+
+        var t = TokensToPredicates.parse(tokens);
+
+        var p = t.getStationPredicate(WordKey.TO).orElseThrow();
+
+        assertFalse(p.test(STATION_1));
+        assertFalse(p.test(STATION_2));
+        assertTrue(p.test(STATION_3));
+        assertTrue(p.test(STATION_4));
     }
 
     @Test
