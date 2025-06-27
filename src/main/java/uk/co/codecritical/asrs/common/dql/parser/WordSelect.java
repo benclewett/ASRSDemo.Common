@@ -11,7 +11,8 @@ public enum WordSelect {
     STATION,
     DECANT,
     TOTE,
-    BOT;
+    BOT,
+    HIVE;
 
     public static final ImmutableSet<String> ALL_AS_STRING = Arrays.stream(WordSelect.values())
             .map(Enum::toString)

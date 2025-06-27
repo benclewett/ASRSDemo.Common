@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /** Tokens for tote meta */
 public class TokenSet {
@@ -48,6 +49,10 @@ public class TokenSet {
 
     public ImmutableSet<String> get() {
         return tokens;
+    }
+
+    public Stream<String> stream() {
+        return tokens.stream();
     }
 
     public static String filter(String token) {
