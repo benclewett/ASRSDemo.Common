@@ -123,6 +123,12 @@ public class TestQueryHandler implements DqlQueryHandler {
     }
 
     @Override
+    public DqlQuery updateSetDql(DqlQuery query, ImmutableList<Assignment> assignments) {
+        this.assignments = assignments;
+        return query.mutate().setQueryResponse(DqlQuery.QueryResponse.OK).build();
+    }
+
+    @Override
     public DqlQuery select(DqlQuery query, WordSelect entity) {
         return query.mutate()
                 .setQueryResponse(DqlQuery.QueryResponse.OK)

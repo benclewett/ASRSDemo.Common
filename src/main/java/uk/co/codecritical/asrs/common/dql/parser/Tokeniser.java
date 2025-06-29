@@ -41,14 +41,14 @@ public class Tokeniser {
                 if (!prevToken.getLegalFollowingTokens().contains(token.tokenType)) {
                     throw new DqlException(
                             DqlExceptionType.UNEXPECTED_SYNTAX,
-                            "Phrase '" + token.word + "' should not follow '" + prevToken.tokenType + "'");
+                            "Token '" + token.word + "' should not follow '" + prevToken.word + "'");
                 }
                 if (Token.TokenType.KEYWORD.equals(token.tokenType)) {
                     var nextKeyWord = WordKey.mapFromString(token.word).orElseThrow();
                     if (!wordKey.checkValidSequence(nextKeyWord)) {
                         throw new DqlException(
                                 DqlExceptionType.UNEXPECTED_SYNTAX,
-                                "Phrase '" + nextKeyWord + "' should not follow " + wordKey + "'");
+                                "Token '" + nextKeyWord + "' should not follow " + wordKey + "'");
                     }
                     wordKey = nextKeyWord;
                 }

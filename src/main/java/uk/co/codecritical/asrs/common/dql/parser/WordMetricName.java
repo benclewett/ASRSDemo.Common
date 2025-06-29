@@ -15,6 +15,8 @@ public enum WordMetricName {
     SKU,
     /** Sku Amount */
     AMOUNT,
+    /** Sets the speed of the SIM */
+    SIM_SPEED,
     /** Does nothing */
     TEST;   // Does nothing
 

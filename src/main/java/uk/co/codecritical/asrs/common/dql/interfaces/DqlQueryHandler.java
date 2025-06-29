@@ -47,6 +47,11 @@ public interface DqlQueryHandler {
             ImmutableList<Assignment> assignments
     );
 
+    DqlQuery updateSetDql(
+            DqlQuery query,
+            ImmutableList<Assignment> assignments
+    );
+
     DqlQuery select(
             DqlQuery dqlQuery,
             WordSelect entity

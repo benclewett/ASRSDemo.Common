@@ -223,5 +223,14 @@ public class DqlExecutorTest {
         assertEquals(TestSystemVariables.version, query.table.rows.get(0).get(1));
     }
 
+    @Test
+    void testUpdate_SimSpeed() {
+        var query = executor.execute("UPDATE SET sim_speed = 0.5");
+        assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
+        assertEquals(1, grid.assignments.size());
+        assertEquals("SIM_SPEED", grid.assignments.get(0).name());
+        assertEquals("0.5", grid.assignments.get(0).value());
+    }
+
     //endregion
 }

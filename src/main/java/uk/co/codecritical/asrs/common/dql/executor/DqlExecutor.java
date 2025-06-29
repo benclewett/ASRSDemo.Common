@@ -97,6 +97,9 @@ public class DqlExecutor {
                     }
                     dqlQuery = dqlQueryHandler.select(dqlQuery, wordSelect.get());
                 }
+                case UPDATE -> {
+                    dqlQuery = dqlQueryHandler.updateSetDql(dqlQuery, tokensToPredicates.getAssignment());
+                }
                 default -> throw new DqlException(
                         DqlExceptionType.UNSUPPORTED,
                         "Unsupported keyword: " + tokensToPredicates.getKeyWord());
