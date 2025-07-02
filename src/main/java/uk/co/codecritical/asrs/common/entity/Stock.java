@@ -1,4 +1,4 @@
-package uk.co.codecritical.asrs.common;
+package uk.co.codecritical.asrs.common.entity;
 
 import com.google.common.base.MoreObjects;
 

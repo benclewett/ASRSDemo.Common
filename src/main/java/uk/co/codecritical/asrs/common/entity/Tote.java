@@ -1,4 +1,4 @@
-package uk.co.codecritical.asrs.common;
+package uk.co.codecritical.asrs.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
@@ -17,14 +17,16 @@ public class Tote implements ToteDql {
     @JsonIgnore
     public final Optional<Pos> gridPos;
     public final TokenSet properties;
+    public final TokenSet meta;
     public final Availability available;
 
-    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties, Availability available) {
+    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties, TokenSet meta, Availability available) {
         this.id = id;
         this.sku = sku;
         this.amount = amount;
         this.gridPos = gridPos;
         this.properties = properties;
+        this.meta = meta;
         this.available = available;
     }
 
@@ -36,6 +38,7 @@ public class Tote implements ToteDql {
                 .add("amount", amount)
                 .add("gridPos", gridPos)
                 .add("properties", properties)
+                .add("meta", meta)
                 .add("available", available)
                 .toString();
     }
@@ -69,6 +72,11 @@ public class Tote implements ToteDql {
     }
 
     @Override
+    public ImmutableSet<String> getMeta() {
+        return meta.get();
+    }
+
+    @Override
     public int getAmount() {
         return amount;
     }
@@ -76,6 +84,11 @@ public class Tote implements ToteDql {
     @Override
     public ToteDql setProperties(ImmutableSet<String> properties) {
         return this.mutate().setProperties(properties).build();
+    }
+
+    @Override
+    public ToteDql setMeta(ImmutableSet<String> meta) {
+        return this.mutate().setMeta(meta).build();
     }
 
     @Override
@@ -87,12 +100,13 @@ public class Tote implements ToteDql {
                 && Objects.equals(sku, tote.sku)
                 && Objects.equals(gridPos, tote.gridPos)
                 && Objects.equals(properties, tote.properties)
+                && Objects.equals(meta, tote.meta)
                 && Objects.equals(available, tote.available);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sku, amount, gridPos, properties, available);
+        return Objects.hash(id, sku, amount, gridPos, properties, meta, available);
     }
 
     //region Builder
@@ -120,7 +134,8 @@ public class Tote implements ToteDql {
                 .setGridPos(gridPos)
                 .setSku(sku)
                 .setProperties(properties)
-                .setAvailable(available);
+                .setAvailable(available)
+                .setMeta(meta);
     }
 
     public static class Builder {
@@ -129,6 +144,7 @@ public class Tote implements ToteDql {
         private int amount = 0;
         private Optional<Pos> gridPos = Optional.empty();
         private TokenSet properties = TokenSet.EMPTY;
+        private TokenSet meta = TokenSet.EMPTY;
         private Availability available = Availability.AVAILABLE_RETRIEVE;
         private Builder() {
             this.id = getNextId();
@@ -185,13 +201,29 @@ public class Tote implements ToteDql {
             this.properties = this.properties.mutate().removeToken(TokenSet.filter(property)).build();
             return this;
         }
+        public Builder setMeta(ImmutableSet<String> meta) {
+            this.meta = TokenSet.of(meta);
+            return this;
+        }
+        public Builder setMeta(TokenSet meta) {
+            this.meta = meta;
+            return this;
+        }
+        public Builder addMeta(String meta) {
+            this.meta = this.meta.mutate().addToken(TokenSet.filter(meta)).build();
+            return this;
+        }
+        public Builder delMeta(String meta) {
+            this.meta = this.meta.mutate().removeToken(TokenSet.filter(meta)).build();
+            return this;
+        }
         public Builder setAvailable(Availability available) {
             this.available = available;
             return this;
         }
         public Tote build() {
             assert (sku.isEmpty() && amount == 0 || sku.isPresent() && amount != 0);
-            return new Tote(id, sku, amount, gridPos, properties, available);
+            return new Tote(id, sku, amount, gridPos, properties, meta, available);
         }
     }
 

@@ -7,10 +7,12 @@ import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 public class TestTote implements ToteDql {
     final int id;
     ImmutableSet<String> properties;
+    ImmutableSet<String> meta;
 
     public TestTote(int id, String... properties) {
         this.id = id;
         this.properties = ImmutableSet.copyOf(properties);
+        this.meta = ImmutableSet.of();
     }
 
     @Override
@@ -29,6 +31,11 @@ public class TestTote implements ToteDql {
     }
 
     @Override
+    public ImmutableSet<String> getMeta() {
+        return meta;
+    }
+
+    @Override
     public int getAmount() {
         return 0;
     }
@@ -36,6 +43,12 @@ public class TestTote implements ToteDql {
     @Override
     public ToteDql setProperties(ImmutableSet<String> properties) {
         this.properties = properties;
+        return this;
+    }
+
+    @Override
+    public ToteDql setMeta(ImmutableSet<String> meta) {
+        this.meta = meta;
         return this;
     }
 

@@ -1,4 +1,4 @@
-package uk.co.codecritical.asrs.common;
+package uk.co.codecritical.asrs.common.entity;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableCollection;
@@ -11,12 +11,12 @@ import java.util.stream.Stream;
 public class TokenSet {
     public static final TokenSet EMPTY = new TokenSet(ImmutableSet.of());
 
-    public static TokenSet of(ImmutableSet<String> properties) {
-        return new TokenSet(properties);
+    public static TokenSet of(ImmutableSet<String> token) {
+        return new TokenSet(token);
     }
 
-    public static TokenSet of(String... property) {
-        return new TokenSet(ImmutableSet.copyOf(property));
+    public static TokenSet of(String... token) {
+        return new TokenSet(ImmutableSet.copyOf(token));
     }
 
     private final ImmutableSet<String> tokens;
@@ -36,8 +36,7 @@ public class TokenSet {
     }
 
     public boolean isPresent(String token) {
-        token = filter(token);
-        return tokens.contains(token);
+        return tokens.contains(filter(token));
     }
 
     @Override

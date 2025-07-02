@@ -1,6 +1,8 @@
 package uk.co.codecritical.asrs.common;
 
 import org.junit.jupiter.api.Test;
+import uk.co.codecritical.asrs.common.entity.Route;
+import uk.co.codecritical.asrs.common.entity.Tote;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

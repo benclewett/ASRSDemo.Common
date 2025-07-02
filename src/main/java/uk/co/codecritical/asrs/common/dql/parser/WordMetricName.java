@@ -18,7 +18,13 @@ public enum WordMetricName {
     /** Sets the speed of the SIM */
     SIM_SPEED,
     /** Does nothing */
-    TEST;   // Does nothing
+    TEST,   // Does nothing
+    /** Replace All Tote Meta */
+    META,
+    /** Add a Tote Meta */
+    ADD_META,
+    /** Remove a Tote Meta */
+    DEL_META;
 
     private static final ImmutableSet<String> SET = createMap();
 

@@ -2,9 +2,9 @@ package uk.co.codecritical.asrs.common.notifications;
 
 import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
-import uk.co.codecritical.asrs.common.Pos;
-import uk.co.codecritical.asrs.common.TokenSet;
-import uk.co.codecritical.asrs.common.Tote;
+import uk.co.codecritical.asrs.common.entity.Pos;
+import uk.co.codecritical.asrs.common.entity.TokenSet;
+import uk.co.codecritical.asrs.common.entity.Tote;
 
 import java.util.Optional;
 

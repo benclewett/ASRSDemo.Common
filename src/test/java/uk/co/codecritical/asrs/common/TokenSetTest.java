@@ -2,6 +2,7 @@ package uk.co.codecritical.asrs.common;
 
 import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
+import uk.co.codecritical.asrs.common.entity.TokenSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
