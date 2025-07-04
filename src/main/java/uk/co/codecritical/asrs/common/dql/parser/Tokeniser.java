@@ -2,6 +2,12 @@ package uk.co.codecritical.asrs.common.dql.parser;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordComparison;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordEntity;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordKey;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordLogical;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordMetricName;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordSelect;
 
 public class Tokeniser {
     private static final ImmutableSet<Character> WHITE_SPACE = ImmutableSet.of(' ', '\t', '\n', '\r');

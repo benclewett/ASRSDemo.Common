@@ -7,7 +7,7 @@ import uk.co.codecritical.asrs.common.dql.interfaces.DqlQueryHandler;
 import uk.co.codecritical.asrs.common.dql.interfaces.StationDql;
 import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 import uk.co.codecritical.asrs.common.dql.parser.Assignment;
-import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordSelect;
 
 import java.util.Optional;
 import java.util.function.Predicate;

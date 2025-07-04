@@ -6,10 +6,10 @@ import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
 import uk.co.codecritical.asrs.common.dql.parser.DqlExceptionType;
 import uk.co.codecritical.asrs.common.dql.parser.DqlException;
 import uk.co.codecritical.asrs.common.dql.parser.Token;
-import uk.co.codecritical.asrs.common.dql.parser.WordKey;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordKey;
 import uk.co.codecritical.asrs.common.dql.parser.Tokeniser;
 import uk.co.codecritical.asrs.common.dql.parser.TokensToPredicates;
-import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordSelect;
 
 import java.util.function.Predicate;
 

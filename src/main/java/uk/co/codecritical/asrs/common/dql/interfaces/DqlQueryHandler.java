@@ -3,7 +3,7 @@ package uk.co.codecritical.asrs.common.dql.interfaces;
 import com.google.common.collect.ImmutableList;
 import uk.co.codecritical.asrs.common.dql.executor.DqlQuery;
 import uk.co.codecritical.asrs.common.dql.parser.Assignment;
-import uk.co.codecritical.asrs.common.dql.parser.WordSelect;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordSelect;
 
 import java.util.function.Predicate;
 

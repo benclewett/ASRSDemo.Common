@@ -1,4 +1,4 @@
-package uk.co.codecritical.asrs.common.dql.parser;
+package uk.co.codecritical.asrs.common.dql.parser.words;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;

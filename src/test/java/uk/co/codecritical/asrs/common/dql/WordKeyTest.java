@@ -1,7 +1,7 @@
 package uk.co.codecritical.asrs.common.dql;
 
 import org.junit.jupiter.api.Test;
-import uk.co.codecritical.asrs.common.dql.parser.WordKey;
+import uk.co.codecritical.asrs.common.dql.parser.words.WordKey;
 
 import java.util.Optional;
 
