@@ -91,9 +91,10 @@ public class TokenSet {
         }
         public Builder removeToken(String token) {
             var tokens = builder.build();
+            token = token.toUpperCase();
             builder = ImmutableSet.builder();
             for (var t : tokens) {
-                if (!t.equals(token)) {
+                if (!t.equals(filter(token))) {
                     builder.add(t);
                 }
             }

@@ -15,7 +15,7 @@ public enum WordMeta {
         this.pattern = Pattern.compile(regEx);
     }
 
-    public static Optional<WordMeta> get(String token) {
+    public static Optional<WordMeta> mapFromString(String token) {
         token = token.toUpperCase();
         for (var meta : WordMeta.values()) {
             if (meta.pattern.asMatchPredicate().test(token)) {

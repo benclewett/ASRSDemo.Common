@@ -1,10 +1,10 @@
 package uk.co.codecritical.asrs.common.dql.parser.words;
 
 import com.google.common.base.VerifyException;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import uk.co.codecritical.asrs.common.dql.parser.ToteMetaParser;
 
 import javax.annotation.CheckForNull;
 import java.util.List;
@@ -19,7 +19,7 @@ public class WordMetaTest {
     @ParameterizedTest()
     @MethodSource("testQueryFormat")
     public void testQueryFormat(String word, @CheckForNull WordMeta wordMeta, boolean result) {
-        Optional<WordMeta> testResult = WordMeta.get(word);
+        Optional<WordMeta> testResult = WordMeta.mapFromString(word);
 
         assertEquals(result, testResult.isPresent());
 
@@ -31,13 +31,12 @@ public class WordMetaTest {
     }
 
     @ParameterizedTest()
-    @MethodSource("testQueryValue")
-    public void testQueryValue(String word, @CheckForNull String capacility, double value) {
+    @MethodSource("testQueryVelocity")
+    public void testQueryVelocity(String word, @CheckForNull String capacility, double value) {
         if (capacility == null) {
-            assertThrows(VerifyException.class, () -> MetaParser.parse(word));
+            assertThrows(VerifyException.class, () -> ToteMetaParser.parse(word));
         } else {
-            var meta = MetaParser.parse(word);
-
+            var meta = ToteMetaParser.parse(word);
             assertEquals(capacility.toUpperCase(), meta.capability());
             assertEquals(value, meta.value());
         }
@@ -45,7 +44,7 @@ public class WordMetaTest {
 
     //---------------------------- Support Code -----------------------
 
-    private static List<Arguments> testQueryValue() {
+    private static List<Arguments> testQueryVelocity() {
         return List.of(
                 Arguments.of("velocity,cap,0.0", "cap", 0.0),
                 Arguments.of("velocity,cap,1.0", "cap", 1.0),
@@ -53,7 +52,7 @@ public class WordMetaTest {
                 Arguments.of("velocity,cap,1.0", "CAP", 1.0),
                 Arguments.of("notVelocity,cap,0.0", null, 0.0),
                 Arguments.of("velocity,cap,-0.01", null, 0.0),
-                Arguments.of("velocity,cap, 1.01", null, 0.0)
+                Arguments.of("velocity,cap,1.01", null, 0.0)
         );
     }
 

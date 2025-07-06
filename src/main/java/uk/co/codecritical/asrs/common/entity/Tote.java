@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
+import uk.co.codecritical.asrs.common.dql.parser.ToteMeta;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -17,10 +18,10 @@ public class Tote implements ToteDql {
     @JsonIgnore
     public final Optional<Pos> gridPos;
     public final TokenSet properties;
-    public final TokenSet meta;
+    public final ImmutableSet<ToteMeta> meta;
     public final Availability available;
 
-    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties, TokenSet meta, Availability available) {
+    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties, ImmutableSet<ToteMeta> meta, Availability available) {
         this.id = id;
         this.sku = sku;
         this.amount = amount;
@@ -72,23 +73,13 @@ public class Tote implements ToteDql {
     }
 
     @Override
-    public ImmutableSet<String> getMeta() {
-        return meta.get();
-    }
-
-    @Override
     public int getAmount() {
         return amount;
     }
 
     @Override
-    public ToteDql setProperties(ImmutableSet<String> properties) {
-        return this.mutate().setProperties(properties).build();
-    }
-
-    @Override
-    public ToteDql setMeta(ImmutableSet<String> meta) {
-        return this.mutate().setMeta(meta).build();
+    public ImmutableSet<ToteMeta> getMeta() {
+        return meta;
     }
 
     @Override
@@ -144,7 +135,7 @@ public class Tote implements ToteDql {
         private int amount = 0;
         private Optional<Pos> gridPos = Optional.empty();
         private TokenSet properties = TokenSet.EMPTY;
-        private TokenSet meta = TokenSet.EMPTY;
+        private ImmutableSet<ToteMeta> meta = ImmutableSet.of();
         private Availability available = Availability.AVAILABLE_RETRIEVE;
         private Builder() {
             this.id = getNextId();
@@ -193,32 +184,12 @@ public class Tote implements ToteDql {
             this.properties = properties;
             return this;
         }
-        public Builder addProperty(String property) {
-            this.properties = this.properties.mutate().addToken(TokenSet.filter(property)).build();
-            return this;
-        }
-        public Builder delProperty(String property) {
-            this.properties = this.properties.mutate().removeToken(TokenSet.filter(property)).build();
-            return this;
-        }
-        public Builder setMeta(ImmutableSet<String> meta) {
-            this.meta = TokenSet.of(meta);
-            return this;
-        }
-        public Builder setMeta(TokenSet meta) {
-            this.meta = meta;
-            return this;
-        }
-        public Builder addMeta(String meta) {
-            this.meta = this.meta.mutate().addToken(TokenSet.filter(meta)).build();
-            return this;
-        }
-        public Builder delMeta(String meta) {
-            this.meta = this.meta.mutate().removeToken(TokenSet.filter(meta)).build();
-            return this;
-        }
         public Builder setAvailable(Availability available) {
             this.available = available;
+            return this;
+        }
+        public Builder setMeta(ImmutableSet<ToteMeta> meta) {
+            this.meta = meta;
             return this;
         }
         public Tote build() {

@@ -112,12 +112,13 @@ public class DqlExecutorTest {
 
     @Test
     void testStoreAssignment() {
-        var query = executor.execute("STORE tote=1 and station=3 set property=foo");
+        var query = executor.execute("STORE tote=1 and station=3 set property=foo, meta=firebreak");
         assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
         assertTrue(grid.selectedTote.isPresent());
         assertEquals(1, grid.selectedTote.get().getId());
-        assertEquals(grid.assignments.size(), 1);
+        assertEquals(grid.assignments.size(), 2);
         assertEquals("foo", grid.assignments.get(0).value());
+        assertEquals("firebreak", grid.assignments.get(1).value());
     }
 
     //endregion
