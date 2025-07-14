@@ -112,7 +112,7 @@ public class DqlExecutorTest {
 
     @Test
     void testStoreAssignment() {
-        var query = executor.execute("STORE tote=1 and station=3 set property=foo, meta=firebreak");
+        var query = executor.execute("STORE tote=1 and station=3 set property=foo, tag=firebreak");
         assertEquals(DqlQuery.QueryResponse.OK, query.queryResponse);
         assertTrue(grid.selectedTote.isPresent());
         assertEquals(1, grid.selectedTote.get().getId());

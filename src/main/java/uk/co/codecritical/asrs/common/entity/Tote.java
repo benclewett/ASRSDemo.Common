@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
-import uk.co.codecritical.asrs.common.dql.parser.ToteMeta;
+import uk.co.codecritical.asrs.common.dql.parser.ToteTag;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -18,16 +18,16 @@ public class Tote implements ToteDql {
     @JsonIgnore
     public final Optional<Pos> gridPos;
     public final TokenSet properties;
-    public final ImmutableSet<ToteMeta> meta;
+    public final ImmutableSet<ToteTag> tags;
     public final Availability available;
 
-    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties, ImmutableSet<ToteMeta> meta, Availability available) {
+    private Tote(int id, Optional<Sku> sku, int amount, Optional<Pos> gridPos, TokenSet properties, ImmutableSet<ToteTag> tags, Availability available) {
         this.id = id;
         this.sku = sku;
         this.amount = amount;
         this.gridPos = gridPos;
         this.properties = properties;
-        this.meta = meta;
+        this.tags = tags;
         this.available = available;
     }
 
@@ -39,7 +39,7 @@ public class Tote implements ToteDql {
                 .add("amount", amount)
                 .add("gridPos", gridPos)
                 .add("properties", properties)
-                .add("meta", meta)
+                .add("tags", tags)
                 .add("available", available)
                 .toString();
     }
@@ -78,8 +78,8 @@ public class Tote implements ToteDql {
     }
 
     @Override
-    public ImmutableSet<ToteMeta> getMeta() {
-        return meta;
+    public ImmutableSet<ToteTag> getTags() {
+        return tags;
     }
 
     @Override
@@ -91,13 +91,13 @@ public class Tote implements ToteDql {
                 && Objects.equals(sku, tote.sku)
                 && Objects.equals(gridPos, tote.gridPos)
                 && Objects.equals(properties, tote.properties)
-                && Objects.equals(meta, tote.meta)
+                && Objects.equals(tags, tote.tags)
                 && Objects.equals(available, tote.available);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sku, amount, gridPos, properties, meta, available);
+        return Objects.hash(id, sku, amount, gridPos, properties, tags, available);
     }
 
     //region Builder
@@ -126,7 +126,7 @@ public class Tote implements ToteDql {
                 .setSku(sku)
                 .setProperties(properties)
                 .setAvailable(available)
-                .setMeta(meta);
+                .setTags(tags);
     }
 
     public static class Builder {
@@ -135,7 +135,7 @@ public class Tote implements ToteDql {
         private int amount = 0;
         private Optional<Pos> gridPos = Optional.empty();
         private TokenSet properties = TokenSet.EMPTY;
-        private ImmutableSet<ToteMeta> meta = ImmutableSet.of();
+        private ImmutableSet<ToteTag> tags = ImmutableSet.of();
         private Availability available = Availability.AVAILABLE_RETRIEVE;
         private Builder() {
             this.id = getNextId();
@@ -188,13 +188,13 @@ public class Tote implements ToteDql {
             this.available = available;
             return this;
         }
-        public Builder setMeta(ImmutableSet<ToteMeta> meta) {
-            this.meta = meta;
+        public Builder setTags(ImmutableSet<ToteTag> tags) {
+            this.tags = tags;
             return this;
         }
         public Tote build() {
             assert (sku.isEmpty() && amount == 0 || sku.isPresent() && amount != 0);
-            return new Tote(id, sku, amount, gridPos, properties, meta, available);
+            return new Tote(id, sku, amount, gridPos, properties, tags, available);
         }
     }
 

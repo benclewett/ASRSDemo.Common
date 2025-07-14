@@ -20,11 +20,11 @@ public enum WordMetricName {
     /** Does nothing */
     TEST,   // Does nothing
     /** Replace All Tote Meta */
-    META,
+    TAG,
     /** Add a Tote Meta */
-    ADD_META,
+    ADD_TAG,
     /** Remove a Tote Meta */
-    DEL_META;
+    DEL_TAG;
 
     private static final ImmutableSet<String> SET = createMap();
 

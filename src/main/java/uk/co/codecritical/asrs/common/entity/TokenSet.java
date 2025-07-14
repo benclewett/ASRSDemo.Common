@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-/** Tokens for tote meta */
+/** Tokens for tote properties or tags */
 public class TokenSet {
     public static final TokenSet EMPTY = new TokenSet(ImmutableSet.of());
 

@@ -1,7 +1,6 @@
 package uk.co.codecritical.asrs.common.dql.parser;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import uk.co.codecritical.asrs.common.dql.interfaces.StationDql;
@@ -10,7 +9,6 @@ import uk.co.codecritical.asrs.common.dql.parser.words.WordComparison;
 import uk.co.codecritical.asrs.common.dql.parser.words.WordEntity;
 import uk.co.codecritical.asrs.common.dql.parser.words.WordKey;
 import uk.co.codecritical.asrs.common.dql.parser.words.WordLogical;
-import uk.co.codecritical.asrs.common.dql.parser.words.WordMeta;
 
 import java.util.HashMap;
 import java.util.Map;

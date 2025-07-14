@@ -3,17 +3,17 @@ package uk.co.codecritical.asrs.common.dql;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 import uk.co.codecritical.asrs.common.dql.interfaces.ToteDql;
-import uk.co.codecritical.asrs.common.dql.parser.ToteMeta;
+import uk.co.codecritical.asrs.common.dql.parser.ToteTag;
 
 public class TestTote implements ToteDql {
     final int id;
     ImmutableSet<String> properties;
-    ImmutableSet<ToteMeta> meta;
+    ImmutableSet<ToteTag> tags;
 
     public TestTote(int id, String... properties) {
         this.id = id;
         this.properties = ImmutableSet.copyOf(properties);
-        this.meta = ImmutableSet.of();
+        this.tags = ImmutableSet.of();
     }
 
     @Override
@@ -32,8 +32,8 @@ public class TestTote implements ToteDql {
     }
 
     @Override
-    public ImmutableSet<ToteMeta> getMeta() {
-        return meta;
+    public ImmutableSet<ToteTag> getTags() {
+        return tags;
     }
 
     @Override
