@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableSet;
 public class Token {
     public final String word;
     public final TokenType tokenType;
+
     public Token(String word, TokenType tokenType) {
         this.word = word;
         this.tokenType = tokenType;
